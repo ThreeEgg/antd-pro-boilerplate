@@ -7,7 +7,7 @@ const axios = Axios.create({
     return status < 500 && status !== 400; // Resolve only if the status code is less than 500
   },
 });
-axios.defaults.baseURL = '/api'
+axios.defaults.baseURL = '/'
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.interceptors.request.use(
   config => {
