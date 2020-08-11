@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styles from './CallStrategy.less'
 import { Button, } from 'antd'
+import StrategyEditor from "./StrategyEditor";
 class CallStrategy extends Component {
   render() {
     return (
@@ -17,7 +18,7 @@ class CallStrategy extends Component {
 
         </div>
         <div className="svgBox">
-
+            <StrategyEditor />
         </div>
       </>
     )
