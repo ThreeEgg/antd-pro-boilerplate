@@ -1,0 +1,50 @@
+.ForbidCallStrategy{
+  padding:8px;
+  border-radius: 5px;
+}
+
+.forbidForm{
+  :global{
+    .title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      >span{
+        color:black;
+        font-size: 20px;
+        font-weight: 600;
+      }
+    }
+    .ant-row{
+      .ant-col{
+        .ant-form-item{
+          margin-bottom: 5px;
+          .ant-form-item-label{
+            width:18%;
+            display:flex;
+            justify-content:flex-start;
+          }
+          .ant-form-item-control{
+            width: 80%;
+            .ant-form-item-control-input{
+              .ant-form-item-control-input-content{
+                .ant-checkbox-group{
+                  width: 100%;
+                }
+              }
+            }
+          }
+        }
+        .moneyInput{
+          .ant-form-item-control{
+            .ant-form-item-control-input{
+              .ant-form-item-control-input-content{
+                display:flex;
+              } 
+            }
+          }
+        }
+      }
+    }
+  }
+}
