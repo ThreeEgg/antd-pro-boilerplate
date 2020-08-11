@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import styles from './CallStrategy.less'
 import { withRouter } from 'react-router-dom'
 import { Button, Input, Select, Row, Col } from 'antd'
+import StrategyEditor from "./StrategyEditor";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -72,7 +73,7 @@ class CallStrategy extends Component {
 
         </div>
         <div className="svgBox">
-
+          <StrategyEditor />
         </div>
       </div>
     )
