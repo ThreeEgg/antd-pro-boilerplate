@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import styles from './index.less'
 import {
   Form, Button, Select, Input, Checkbox, Row,
-  Col, Radio, TimePicker,
-} from 'antd'
+  Col, Radio, TimePicker, InputNumber,
+} from 'antd';
+import moment from '@/utils/moment'
+import styles from './index.less'
+
 const { Option } = Select
 
 class ForbidCallStrategy extends Component {
@@ -47,7 +49,15 @@ class ForbidCallStrategy extends Component {
                   <Option value='<='>≤</Option>
                   <Option value='='>=</Option>
                 </Select>
-                <Input addonAfter="%" style={{ width: 100, marginLeft: 5 }}></Input>
+                <InputNumber
+                  defaultValue={100}
+                  min={0}
+                  max={100}
+                  formatter={value => `${value}%`}
+                  parser={value => value.replace('%', '')}
+                  style={{ width: 100, marginLeft: 5 }}
+                />
+                {/* <Input addonAfter="%" style={{ width: 100, marginLeft: 5 }} ></Input> */}
               </Form.Item>
               <Form.Item label="案件状态类型">
                 <Checkbox.Group>
@@ -128,16 +138,17 @@ class ForbidCallStrategy extends Component {
                 <span>顺延拨打任务</span>
               </div>
               <Form.Item label="单任务单日拨打上限">
-                <Input addonAfter="次" style={{ width: 130 }}></Input>
+                <Input addonAfter="次" style={{ width: 130 }} type="number" />
               </Form.Item>
               <Form.Item label="单电话单日拨打上限">
-                <Input addonAfter="次" style={{ width: 130 }}></Input>
+                <Input addonAfter="次" style={{ width: 130 }} />
               </Form.Item>
               <Form.Item label="每日截至拨打时间">
                 <TimePicker
+                  defaultValue={moment('12:00', 'HH:mm')}
                   format="HH:mm"
                   allowClear={false}
-                ></TimePicker>
+                />
               </Form.Item>
               <Form.Item label="周末不拨打">
                 <Radio.Group>

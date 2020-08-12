@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import styles from './CallStrategy.less'
 import { withRouter } from 'react-router-dom'
 import { Button, Input, Select, Row, Col } from 'antd'
+import styles from './CallStrategy.less'
 import StrategyEditor from "./StrategyEditor";
+
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -72,7 +73,7 @@ class CallStrategy extends Component {
           </Row>
 
         </div>
-        <div className="svgBox">
+        <div className={styles.svgBox}>
           <StrategyEditor />
         </div>
       </div>

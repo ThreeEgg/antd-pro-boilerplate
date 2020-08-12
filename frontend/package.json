@@ -39,6 +39,7 @@
     ]
   },
   "devDependencies": {
+    "@umijs/fabric": "^2.2.2",
     "customize-cra": "^1.0.0",
     "react-app-rewired": "^2.1.6"
   },
