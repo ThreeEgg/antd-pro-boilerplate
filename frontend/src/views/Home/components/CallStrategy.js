@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
-import { Button, Input, Select, Row, Col } from 'antd'
+import {
+  Button, Input, Select, Row, Col,
+  InputNumber, Form
+} from 'antd'
 import styles from './CallStrategy.less'
 import StrategyEditor from "./StrategyEditor";
 
@@ -20,13 +23,17 @@ class CallStrategy extends Component {
 
   goToForbidStrategy = () => {
     const { history } = this.props;
-    history && history.push('/forbidCallStrategy')
+    history.push('/forbidCallStrategy')
+  }
+
+  onFinish = params => {
+    console.log('params', params)
   }
 
   render() {
     return (
       <div className={styles.CallStrategy}>
-        <div className={styles.baseInfoInput}>
+        <Form className={styles.baseInfoInput} onFinish={this.onFinish}>
           <div className={styles.titleBox}>
             <div className="title">
               <span>拨打策略集-智能对话</span>
@@ -34,45 +41,40 @@ class CallStrategy extends Component {
             </div>
             <div className="btnBox">
               <Button>返回</Button>
-              <Button type="primary" style={{ marginLeft: 5 }}>保存</Button>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">保存</Button>
+              </Form.Item>
             </div>
           </div>
-          <Row className={styles.inputBox}>
-            <Col className="inputBoxLeft" {...this.colAdapt(24, 24, 24, 14, 8, 8)}>
-              <div className="inputItem">
-                <span>策略名称</span>
-                <Input type="text" />
-              </div>
-              <div className="inputItem">
-                <span>总拨打次数上限</span>
-                <Input type="text" />
-              </div>
-              <div className="inputItem">
-                <span>选择线路地区</span>
-                <Select mode="multiple"
-                >
-                  <Option value={1}>111</Option>
-                  <Option value={2}>222</Option>
-                  <Option value={3}>333</Option>
-                  <Option value={4}>444</Option>
+          <Row>
+            <Col {...this.colAdapt(24, 24, 24, 24, 10, 10)} className={styles.formItemBox}>
+              <Form.Item label="策略名称">
+                <Input />
+              </Form.Item>
+              <Form.Item label="总拨打次数上限">
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+              <Form.Item label="选择线路地区">
+                <Select mode="multiple">
+                  <Option value="1">1</Option>
+                  <Option value="2">2</Option>
+                  <Option value="3">3</Option>
+                  <Option value="4">4</Option>
                 </Select>
-              </div>
-              <div className="inputItem">
-                <span>首次拨打生效间隔</span>
-                <Select
-                >
-                  <Option value={1}>立即生效</Option>
-                  <Option value={2}>1天</Option>
+              </Form.Item>
+              <Form.Item label="首次拨打生效间隔">
+                <Select>
+                  <Option value="1">立即生效</Option>
+                  <Option value="2">1天</Option>
                 </Select>
-              </div>
-              <div className="inputItem">
-                <span>策略说明</span>
+              </Form.Item>
+              <Form.Item label="策略说明">
                 <TextArea />
-              </div>
+              </Form.Item>
             </Col>
           </Row>
 
-        </div>
+        </Form>
         <div className={styles.svgBox}>
           <StrategyEditor />
         </div>

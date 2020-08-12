@@ -9,45 +9,29 @@
     justify-content:space-between;
     :global{
       .title{
-        color:black;
-        font-size: 20px;
-        font-weight: 600;
-      }
-    }
-  }
-}
-
-.inputBox{
-  // width:30%;
-  display:flex;
-  justify-content:space-between;
-  :global{
-    .inputBoxLeft{
-      width:100%;
-      .inputItem{
-        margin: 5px 0;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
         >span{
-          width:30%;
-          display:flex;
-          align-items:center;
+          color:black;
+          font-size: 20px;
+          font-weight: 600;
         }
-        .ant-input{
-          width:70%;
-        }
-        .ant-select{
-          width: 70%;
-          .ant-select-arrow{
-            display: none;
-          }
+      }
+      .btnBox{
+        display: flex;
+        >.ant-btn{
+          margin-right:5px;
         }
       }
     }
   }
 }
 
-.svgBox{
-
+.formItemBox{
+  :global {
+    .ant-form-item{
+      .ant-form-item-label{
+        width:18%;
+        text-align: left;
+      }
+    }
+  }
 }
