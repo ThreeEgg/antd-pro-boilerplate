@@ -10,54 +10,88 @@ const { Option } = Select
 class JudgeTypeGather extends Component {
 
   state = {
+    callTimeLimit: null,
+    remindUser: null,
+    progressHidden: null,
+    followInterval: null,
+    followIntervalType: null,
+  }
 
+  componentDidMount() {
+    const { strategyRuleItem } = this.props
+    this.setState({
+      callTimeLimit: strategyRuleItem.callTimeLimit,
+      remindUser: strategyRuleItem.remindUser,
+      progressHidden: strategyRuleItem.progressHidden,
+      followInterval: strategyRuleItem.followInterval,
+      followIntervalType: strategyRuleItem.followIntervalType,
+    })
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.strategyRuleItem !== this.props.strategyRuleItem) {
+      const { strategyRuleItem } = this.props
+      this.setState({
+        callTimeLimit: strategyRuleItem.callTimeLimit,
+        remindUser: strategyRuleItem.remindUser,
+        progressHidden: strategyRuleItem.progressHidden,
+        followInterval: strategyRuleItem.followInterval,
+        followIntervalType: strategyRuleItem.followIntervalType,
+      })
+    }
   }
 
   render() {
+    const { callTimeLimit, remindUser, progressHidden, followInterval, followIntervalType, } = this.state;
+    const { strategyRuleItem, propsIndex } = this.props;
     return (
       <div className={classNames(styles.JudgeTypeGather, 'source')}>
         <div className={styles.gatherTitleBox}>
           <div className="title">
-            <span>判断类型集1：</span>
-            <span>需人工</span>
+            <span>判断类型集{propsIndex + 1}：</span>
+            <span>{strategyRuleItem.ruleName}</span>
           </div>
           <div className="btnBox">
             <Button danger size="small" type="link">删除</Button>
           </div>
         </div>
         <div className={styles.judgeBox}>
-          <Tag color="rgb(22,155,213)">身体异常</Tag>
-          <Tag color="rgb(22,155,213)">承诺还款</Tag>
-          <Tag color="rgb(22,155,213)">投诉预警</Tag>
-          <Tag color="rgb(22,155,213)">人工介入</Tag>
+          {
+            strategyRuleItem.judgeTypeList.map(item => {
+              return (
+                <Tag color="rgb(22,155,213)" key={item}>{item}</Tag>
+              )
+            })
+          }
         </div>
         <div className={styles.formInputGroup}>
           <div className="formInputItem">
             <span>单规则拨打次数上限</span>
             <InputNumber
+              value={callTimeLimit}
               min={0}
               max={999}
             />
           </div>
           <div className="formInputItem">
             <span>本次拨打结果提示人工</span>
-            <Radio.Group>
-              <Radio value={1}>是</Radio>
-              <Radio value={2}>否</Radio>
+            <Radio.Group value={remindUser}>
+              <Radio value>是</Radio>
+              <Radio value={false}>否</Radio>
             </Radio.Group>
           </div>
           <div className="formInputItem">
             <span>本次拨打结果隐藏催记</span>
-            <Radio.Group>
-              <Radio value={1}>是</Radio>
-              <Radio value={2}>否</Radio>
+            <Radio.Group value={progressHidden}>
+              <Radio value>是</Radio>
+              <Radio value={false}>否</Radio>
             </Radio.Group>
           </div>
           <div className="formInputItem">
             <span>下次拨打跟进间隔</span>
             <div className="multipleBox">
-              <Input style={{ width: 100 }} />
-              <Select style={{ width: 80, marginLeft: 5 }}>
+              <Input style={{ width: 100 }} value={followInterval} />
+              <Select style={{ width: 80, marginLeft: 5 }} value={followIntervalType}>
                 <Option value={1}>天</Option>
                 <Option value={2}>小时</Option>
               </Select>

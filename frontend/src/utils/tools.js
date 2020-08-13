@@ -13,7 +13,7 @@ export const getParameter = param => {  // 获取url中参数
   return decodeURI(query.substring(iStart, iEnd), 'utf-8');
 };
 
-export const trimEmpty = arr => {  //数组去空
+export const trimEmpty = arr => {  // 数组去空
   const newArr = [];
   arr.forEach(item => {
     if (item !== '') {
@@ -35,3 +35,5 @@ export const exportExcel = (data, title) => {  // 导出表格
   link.click();
   document.body.removeChild(link);
 }
+
+

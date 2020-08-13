@@ -11,13 +11,14 @@ class SubStrategy extends Component {
   }
 
   render() {
-    const { propsId } = this.props;
+    const { propsId, subStrategyItem, judgeTypeList = [] } = this.props;
+    const { strategyRuleList = [] } = subStrategyItem
     return (
       <div className={styles.item} id={propsId}>
         <div className={styles.titleBox}>
           <div className="title">
             <span>子拨打策略1：</span>
-            <span>暂未命名</span>
+            <span>{subStrategyItem.name || '暂未命名'}</span>
           </div>
           <div className="btnBox">
             <Button type="primary" size="small">保存</Button>
@@ -29,20 +30,23 @@ class SubStrategy extends Component {
         <div className={styles.judgeType}>
           <span>判断类型</span>
           <div className={styles.judgeTypeBox}>
-            <Tag color="rgb(22,155,213)">身体异常</Tag>
-            <Tag color="rgb(22,155,213)">承诺还款</Tag>
-            <Tag color="rgb(22,155,213)">投诉预警</Tag>
-            <Tag color="rgb(22,155,213)">人工介入</Tag>
-            <Tag color="rgb(22,155,213)">身体异常</Tag>
-            <Tag color="rgb(22,155,213)">承诺还款</Tag>
-            <Tag color="rgb(22,155,213)">投诉预警</Tag>
-            <Tag color="rgb(22,155,213)">人工介入</Tag>
+            {
+              judgeTypeList.map(item => {
+                return (
+                  <Tag color="rgb(22,155,213)" key={item}>{item}</Tag>
+                )
+              })
+            }
           </div>
         </div>
         <div className={styles.judgeTypeGatherBox}>
-          <JudgeTypeGather />
-          <JudgeTypeGather />
-          <JudgeTypeGather />
+          {
+            strategyRuleList.map((strategyRuleItem, index) => {
+              return (
+                <JudgeTypeGather strategyRuleItem={strategyRuleItem} key={strategyRuleItem.ruleId} propsIndex={index} />
+              )
+            })
+          }
         </div>
       </div>
     )

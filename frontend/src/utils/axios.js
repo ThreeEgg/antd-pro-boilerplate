@@ -7,7 +7,7 @@ const axios = Axios.create({
     return status < 500 && status !== 400; // Resolve only if the status code is less than 500
   },
 });
-axios.defaults.baseURL = '/'
+axios.defaults.baseURL = '/lxcs-admin'
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.interceptors.request.use(
   config => {

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Tag } from 'antd';
 import styles from './StrategyEditor.less';
 import SubStrategy from './SubStrategy'
 
@@ -26,10 +25,10 @@ class StrategyEditor extends Component {
 
     const { instance } = this;
 
-    const list1El = window.document.querySelector("#list-one");
-    const list2El = window.document.querySelector("#list-two");
-    const list3El = window.document.querySelector("#list-three");
-    const list4El = window.document.querySelector("#list-four");
+    const list1El = window.document.querySelector("#list-1");
+    const list2El = window.document.querySelector("#list-2");
+    const list3El = window.document.querySelector("#list-3");
+    const list4El = window.document.querySelector("#list-4");
 
     // 设置Source
     const items = list1El.querySelectorAll(".source");
@@ -61,13 +60,16 @@ class StrategyEditor extends Component {
 
   render() {
     const { clientHeight } = this.state;
+    const { subStrategyList = [], judgeTypeList = [] } = this.props
     return (
       <div className={styles.container} style={{ height: clientHeight - 265 }} id="editor">
-
-        <SubStrategy propsId="list-one" />
-        <SubStrategy propsId="list-two" />
-        <SubStrategy propsId="list-three" />
-        <SubStrategy propsId="list-four" />
+        {
+          subStrategyList.map((subStrategyItem, index) => {
+            return (
+              <SubStrategy propsId={`list-${index + 1}`} subStrategyItem={subStrategyItem} key={subStrategyItem.id} judgeTypeList={judgeTypeList} />
+            )
+          })
+        }
       </div>
     );
   }

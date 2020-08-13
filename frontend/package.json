@@ -13,6 +13,7 @@
     "less-loader": "^6.2.0",
     "moment": "^2.27.0",
     "react": "^16.13.1",
+    "react-beautiful-dnd": "^13.0.0",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1"
@@ -43,5 +44,5 @@
     "customize-cra": "^1.0.0",
     "react-app-rewired": "^2.1.6"
   },
-  "proxy": "http://172.16.110.21:8080/lxcs-admin"
+  "proxy": "http://172.16.110.21:8080"
 }
