@@ -14,10 +14,10 @@ axios.interceptors.request.use(
     if (config.method === 'post') {
       config.data = JSON.stringify(config.data);
     }
-    const token = localStorage.getItem('accessToken');
+    /* const token = localStorage.getItem('accessToken');
     if (token) {
       config.headers.Authorization = token;
-    }
+    } */
     return config;
   },
   error => {
@@ -39,17 +39,26 @@ axios.interceptors.response.use(
     }
     const { status } = response;
     if (status !== 200) {
+      notification.error({
+        message: status,
+        // description: isDev ? url.split('?')[0] : '',
+        placement: 'topRight',
+      });
+
+    } else {
       const {
         data: {
-          error: { code, detail, message: msg },
+          success, message: msg,
         },
-      } = response;
-      if (msg === 'loginFailed') {
-        message.error(detail)
-      } else {
+        config: {
+          url
+        }
+      } = response
+      const isDev = process.env.NODE_ENV === "development"
+      if (!success) {
         notification.error({
-          message: code,
-          description: detail,
+          message: msg,
+          description: isDev ? url.split('?')[0] : '',
           placement: 'topRight',
         });
       }
@@ -58,7 +67,7 @@ axios.interceptors.response.use(
     //   localStorage.clear();
     //   window.location.reload();
     // }
-    return response;
+    return response.data ? response.data : response;
   },
   error => {
     notification.error({

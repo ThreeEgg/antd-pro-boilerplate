@@ -9,3 +9,7 @@ export const getStrategyDetail = params => {
 export const getJudgeType = () => {
   return axios.get(`${api.judgeType}`)
 }
+
+export const getRouteList = () => {
+  return axios.get(`${api.routeList}`)
+}

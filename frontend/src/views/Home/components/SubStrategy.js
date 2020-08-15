@@ -7,12 +7,20 @@ import styles from './StrategyEditor.less'
 class SubStrategy extends Component {
 
   state = {
+    judgeTypeList: []
+  }
 
+  componentDidMount() {
+    const { AllJudgeTypeList, subStrategyItem: { unusedJudgeTypeList } } = this.props;
+
+    console.log()
   }
 
   render() {
-    const { propsId, subStrategyItem, judgeTypeList = [] } = this.props;
-    const { strategyRuleList = [] } = subStrategyItem
+    const { propsId, subStrategyItem, AllJudgeTypeList = [] } = this.props;
+    const { strategyRuleList = [] } = subStrategyItem;
+    const { judgeTypeList } = this.state
+    console.log('subStrategyItem', subStrategyItem)
     return (
       <div className={styles.item} id={propsId}>
         <div className={styles.titleBox}>
@@ -31,7 +39,7 @@ class SubStrategy extends Component {
           <span>判断类型</span>
           <div className={styles.judgeTypeBox}>
             {
-              judgeTypeList.map(item => {
+              subStrategyItem.unusedJudgeTypeList.map(item => {
                 return (
                   <Tag color="rgb(22,155,213)" key={item}>{item}</Tag>
                 )

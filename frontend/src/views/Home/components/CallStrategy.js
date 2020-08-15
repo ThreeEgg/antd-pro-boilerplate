@@ -1,21 +1,24 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import {
   Button, Input, Select, Row, Col,
   InputNumber, Form
 } from 'antd'
+import moment from '@/utils/moment'
 import * as strategyServices from '@/services/strategy'
 import styles from './CallStrategy.less'
 import StrategyEditor from "./StrategyEditor";
+import ForbidCallStrategy from './ForbidCallStrategy'
 
 const { TextArea } = Input;
 const { Option } = Select;
+
 
 class CallStrategy extends Component {
 
   state = {
     strategy: {
-      id: '策略id',
+      /* id: '策略id',
       strategyName: '策略名称',
       callTimeLimit: 999,
       weekendStop: true,
@@ -28,6 +31,7 @@ class CallStrategy extends Component {
           id: '4561235',
           name: '子策略名称',
           strategyId: '策略id',
+          unusedJudgeTypeList: [],
           strategyRuleList: [
             {
               ruleId: '规则id1',
@@ -51,12 +55,24 @@ class CallStrategy extends Component {
               followIntervalType: 2, // 跟进间隔时间类型，1:天，2:小时
               nextSubStrategyId: '箭头关联的子策略id'
             },
+            {
+              ruleId: '规则id3',
+              ruleName: '说了不知道了',
+              judgeTypeList: ['承诺还款'],
+              callTimeLimit: 888,
+              remindUser: true,
+              progressHidden: false,
+              followInterval: 4,
+              followIntervalType: 2, // 跟进间隔时间类型，1:天，2:小时
+              nextSubStrategyId: '箭头关联的子策略id'
+            },
           ]
         },
         {
           id: '456123556',
           name: '子策略名称',
           strategyId: '策略id',
+          unusedJudgeTypeList: [],
           strategyRuleList: [
             {
               ruleId: '规则id',
@@ -75,6 +91,7 @@ class CallStrategy extends Component {
           id: '45612357',
           name: '子策略名称',
           strategyId: '策略id',
+          unusedJudgeTypeList: [],
           strategyRuleList: [
             {
               ruleId: '规则id',
@@ -93,6 +110,7 @@ class CallStrategy extends Component {
           id: '45612354',
           name: '子策略名称',
           strategyId: '策略id',
+          unusedJudgeTypeList: [],
           strategyRuleList: [
             {
               ruleId: '规则id',
@@ -107,22 +125,90 @@ class CallStrategy extends Component {
             }
           ]
         }
-      ]
+      ] */
     },
-    judgeTypeList: ['身体异常', '承诺还款', '投诉预警', '人工介入',]
+    initialValues: {
+      waitDivideMoneyOperator: '<=',
+      waitDivideMoneyPercent: 100,
+      caseType: ['B', 'C'],
+      caseStopCall: 1,
+      remissionAccount: 1,
+      status: ['Stop'],
+      deletedPhone: 1,
+      delFlag: 1,
+      notXiaoGo: 1,
+      taskPauseGreatSevenDay: 1,
+
+      taskDayCallLimit: 2,
+      phoneDayCallLimit: 3,
+      dayStopCallTime: moment('20:00', 'HH:mm'),
+      weekendStop: 0,
+      holidayStop: 0,
+    },
+    routeList: []
   }
 
+  forbidCallRef = createRef()
+
   componentDidMount() {
-    this.getStrategyDetail()
+
     this.getJudgeType()
+    this.getRouteList()
+  }
+
+  getRouteList = async () => {
+    const result = await strategyServices.getRouteList()
+    this.setState({
+      routeList: result
+    })
+    console.log('data', result)
+    /* if (success) {
+      this.setState({
+        routeList: result
+      })
+    } */
   }
 
   getJudgeType = async () => {
-    const data = await strategyServices.getJudgeType()
+    const { success, result } = await strategyServices.getJudgeType();
+    if (success) {
+      this.setState({
+        AllJudgeTypeList: result
+      }, () => {
+        this.getStrategyDetail()
+      })
+    }
   }
 
   getStrategyDetail = async () => {
-    const data = await strategyServices.getStrategyDetail({ strategyId: '5f33b440f637117892e6df4e' })
+    const { success, result } = await strategyServices.getStrategyDetail({ strategyId: '5f35f497f70a6b4fdd7b47f7' })
+    if (success) {
+      this.setState({
+        strategy: this.handleStrategy(result)
+      })
+    }
+  }
+
+  handleStrategy = strategy => {
+    const { AllJudgeTypeList } = this.state;
+    const AllJudgeTypeIdList = [];
+    AllJudgeTypeList.forEach(item => {
+      AllJudgeTypeIdList.push(item.nameCd);
+    })
+    strategy.subStrategyList.forEach(subStrategyItem => {
+      let nowJudgeTypeList = []
+      subStrategyItem.strategyRuleList.forEach(item => {
+        nowJudgeTypeList = nowJudgeTypeList.concat(item.judgeTypeList)
+      })
+      const unusedJudgeTypeList = []
+      AllJudgeTypeIdList.forEach(item => {
+        if (!nowJudgeTypeList.find(demo => demo === item)) {
+          unusedJudgeTypeList.push(item)
+        }
+      })
+      subStrategyItem.unusedJudgeTypeList = unusedJudgeTypeList
+    })
+    return strategy
   }
 
   colAdapt = (xs, sm, md, lg, xl, xxl) => {
@@ -132,16 +218,31 @@ class CallStrategy extends Component {
   }
 
   goToForbidStrategy = () => {
-    const { history } = this.props;
-    history.push('/forbidCallStrategy')
+    this.forbidCallRef.current.handleOk()
   }
 
   onFinish = params => {
     console.log('params', params)
   }
 
+  selectRouteLimit = (rule, value, callback) => {
+    if (!value) {
+      callback('请选择线路')
+      return
+    }
+    if (value.length > 2) {
+      callback('最多选择十条线路')
+    } else if (value.length === 0) {
+      callback('请选择线路')
+    } else {
+      callback('')
+    }
+  }
+
   render() {
-    const { strategy: { subStrategyList }, judgeTypeList } = this.state
+    const { strategy: { subStrategyList }, initialValues, AllJudgeTypeList,
+      routeList,
+    } = this.state
 
     return (
       <div className={styles.CallStrategy}>
@@ -160,36 +261,57 @@ class CallStrategy extends Component {
           </div>
           <Row>
             <Col {...this.colAdapt(24, 24, 24, 24, 10, 10)} className={styles.formItemBox}>
-              <Form.Item label="策略名称">
+              <Form.Item label="策略名称"
+                name="strategyName"
+                rules={[{ required: true, message: '请输入策略名称' }]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item label="总拨打次数上限">
-                <InputNumber style={{ width: '100%' }} />
+              <Form.Item label="总拨打次数上限"
+                name="callTimeLimit"
+                rules={[{ required: true, message: '请输入拨打次数上限' }]}
+              >
+                <InputNumber style={{ width: '100%' }} max={999} min={1} />
               </Form.Item>
-              <Form.Item label="选择线路地区">
+              <Form.Item label="选择线路地区"
+                name="areaIdList"
+                rules={[
+                  { validator: this.selectRouteLimit }
+                ]}
+              >
                 <Select mode="multiple">
-                  <Option value="1">1</Option>
-                  <Option value="2">2</Option>
-                  <Option value="3">3</Option>
-                  <Option value="4">4</Option>
+                  {
+                    routeList.map(item => {
+                      return (
+                        <Option value={item.id} key={item.id}>{item.routeName}</Option>
+                      )
+                    })
+                  }
                 </Select>
               </Form.Item>
-              <Form.Item label="首次拨打生效间隔">
+              <Form.Item label="首次拨打生效间隔"
+                name="firstCallInterval"
+                rules={[{ required: true, message: '请选择手次拨打生效间隔' }]}
+              >
                 <Select>
-                  <Option value="1">立即生效</Option>
-                  <Option value="2">1天</Option>
+                  <Option value={0}>立即生效</Option>
+                  <Option value={1}>1天</Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="策略说明">
-                <TextArea />
+              <Form.Item label="策略说明"
+                name="comment"
+                rules={[{ required: true, message: '请输入策略说明' }]}
+              >
+                <TextArea maxLength={400} />
               </Form.Item>
             </Col>
           </Row>
 
         </Form>
         <div className={styles.svgBox}>
-          <StrategyEditor subStrategyList={subStrategyList} judgeTypeList={judgeTypeList} />
+          {subStrategyList && <StrategyEditor subStrategyList={subStrategyList} AllJudgeTypeList={AllJudgeTypeList} />}
         </div>
+        <ForbidCallStrategy ref={this.forbidCallRef} initialValues={initialValues} callStrategy={this} />
       </div>
     )
   }
