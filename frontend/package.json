@@ -42,7 +42,8 @@
   "devDependencies": {
     "@umijs/fabric": "^2.2.2",
     "customize-cra": "^1.0.0",
-    "react-app-rewired": "^2.1.6"
+    "react-app-rewired": "^2.1.6",
+    "styled-components": "^5.1.1"
   },
   "proxy": "http://172.16.110.21:8080"
 }

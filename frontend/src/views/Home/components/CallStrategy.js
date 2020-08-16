@@ -6,6 +6,7 @@ import {
 } from 'antd'
 import moment from '@/utils/moment'
 import * as strategyServices from '@/services/strategy'
+import { DragDropContext } from 'react-beautiful-dnd'
 import styles from './CallStrategy.less'
 import StrategyEditor from "./StrategyEditor";
 import ForbidCallStrategy from './ForbidCallStrategy'
@@ -230,13 +231,18 @@ class CallStrategy extends Component {
       callback('请选择线路')
       return
     }
-    if (value.length > 2) {
+    if (value.length > 10) {
       callback('最多选择十条线路')
     } else if (value.length === 0) {
-      callback('请选择线路')
+      callback('')
     } else {
       callback('')
     }
+  }
+
+  onDragEnd = result => {
+
+    return result;
   }
 
   render() {
@@ -265,21 +271,24 @@ class CallStrategy extends Component {
                 name="strategyName"
                 rules={[{ required: true, message: '请输入策略名称' }]}
               >
-                <Input />
+                <Input placeholder="请输入策略名称" />
               </Form.Item>
               <Form.Item label="总拨打次数上限"
                 name="callTimeLimit"
                 rules={[{ required: true, message: '请输入拨打次数上限' }]}
               >
-                <InputNumber style={{ width: '100%' }} max={999} min={1} />
+                <InputNumber style={{ width: '100%' }} max={999} min={1} placeholder="请输入拨打次数上限" />
               </Form.Item>
               <Form.Item label="选择线路地区"
                 name="areaIdList"
                 rules={[
+                  { required: true, message: ' ' },
                   { validator: this.selectRouteLimit }
                 ]}
               >
-                <Select mode="multiple">
+                <Select mode="multiple"
+                  placeholder="请选择线路地区"
+                >
                   {
                     routeList.map(item => {
                       return (
@@ -293,7 +302,7 @@ class CallStrategy extends Component {
                 name="firstCallInterval"
                 rules={[{ required: true, message: '请选择手次拨打生效间隔' }]}
               >
-                <Select>
+                <Select placeholder="请选择首次拨打生效间隔">
                   <Option value={0}>立即生效</Option>
                   <Option value={1}>1天</Option>
                 </Select>
@@ -302,14 +311,16 @@ class CallStrategy extends Component {
                 name="comment"
                 rules={[{ required: true, message: '请输入策略说明' }]}
               >
-                <TextArea maxLength={400} />
+                <TextArea maxLength={400} placeholder="请输入策略说明，不超过400字" />
               </Form.Item>
             </Col>
           </Row>
 
         </Form>
         <div className={styles.svgBox}>
-          {subStrategyList && <StrategyEditor subStrategyList={subStrategyList} AllJudgeTypeList={AllJudgeTypeList} />}
+          <DragDropContext onDragEnd={this.onDragEnd}>
+            {subStrategyList && <StrategyEditor subStrategyList={subStrategyList} AllJudgeTypeList={AllJudgeTypeList} />}
+          </DragDropContext>
         </div>
         <ForbidCallStrategy ref={this.forbidCallRef} initialValues={initialValues} callStrategy={this} />
       </div>

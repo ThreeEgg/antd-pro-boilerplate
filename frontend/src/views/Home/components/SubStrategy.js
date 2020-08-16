@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Button, Tag } from 'antd'
+import { Droppable, Draggable } from 'react-beautiful-dnd'
 import JudgeTypeGather from './JudgeTypeGather'
 import styles from './StrategyEditor.less'
-
 
 class SubStrategy extends Component {
 
@@ -16,47 +16,81 @@ class SubStrategy extends Component {
     console.log()
   }
 
+
   render() {
     const { propsId, subStrategyItem, AllJudgeTypeList = [] } = this.props;
     const { strategyRuleList = [] } = subStrategyItem;
     const { judgeTypeList } = this.state
     console.log('subStrategyItem', subStrategyItem)
     return (
-      <div className={styles.item} id={propsId}>
-        <div className={styles.titleBox}>
-          <div className="title">
-            <span>子拨打策略1：</span>
-            <span>{subStrategyItem.name || '暂未命名'}</span>
+      <Droppable droppableId={subStrategyItem.id}>
+        {(provided, snapshot) => (
+          <div className={styles.item} id={propsId}
+            // provided.droppableProps应用的相同元素.
+            {...provided.droppableProps}
+            // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
+            ref={provided.innerRef}
+          >
+            <div className={styles.titleBox}>
+              <div className="title">
+                <span>子拨打策略1：</span>
+                <span>{subStrategyItem.name || '暂未命名'}</span>
+              </div>
+              <div className="btnBox">
+                <Button type="primary" size="small">保存</Button>
+                <Button type="primary" size="small">新增</Button>
+                <Button danger size="small">删除</Button>
+                <Button type="primary" size="small">收起</Button>
+              </div>
+            </div>
+            <div className={styles.judgeType}>
+              <span>判断类型</span>
+              <div className={styles.judgeTypeBox}>
+                {
+                  subStrategyItem.unusedJudgeTypeList.map(item => {
+                    return (
+                      <Draggable
+                        draggableId={item}
+                      >
+                        {
+                          (provided, snapshot) => (
+                            <span
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              ref={provided.innerRef}
+                              isDragging={snapshot.isDragging}
+                            >
+                              <Tag color="rgb(22,155,213)" key={item}>{
+                                AllJudgeTypeList.find(demo => demo.nameCd === item).name
+                              }</Tag>
+                            </span>
+                          )
+                        }
+                      </Draggable>
+
+                    )
+                  })
+                }
+              </div>
+            </div>
+            <div className={styles.judgeTypeGatherBox}>
+              {
+                strategyRuleList.map((strategyRuleItem, index) => {
+                  return (
+                    <JudgeTypeGather strategyRuleItem={strategyRuleItem} key={strategyRuleItem.ruleId} propsIndex={index} AllJudgeTypeList={AllJudgeTypeList} />
+                  )
+                })
+              }
+              <div className={styles.addJudgeTypeGather}>
+                +新增判断类型集
+            </div>
+            </div>
           </div>
-          <div className="btnBox">
-            <Button type="primary" size="small">保存</Button>
-            <Button type="primary" size="small">新增</Button>
-            <Button danger size="small">删除</Button>
-            <Button type="primary" size="small">收起</Button>
-          </div>
-        </div>
-        <div className={styles.judgeType}>
-          <span>判断类型</span>
-          <div className={styles.judgeTypeBox}>
-            {
-              subStrategyItem.unusedJudgeTypeList.map(item => {
-                return (
-                  <Tag color="rgb(22,155,213)" key={item}>{item}</Tag>
-                )
-              })
-            }
-          </div>
-        </div>
-        <div className={styles.judgeTypeGatherBox}>
-          {
-            strategyRuleList.map((strategyRuleItem, index) => {
-              return (
-                <JudgeTypeGather strategyRuleItem={strategyRuleItem} key={strategyRuleItem.ruleId} propsIndex={index} />
-              )
-            })
-          }
-        </div>
-      </div>
+        )
+
+        }
+      </Droppable>
+
     )
   }
 }

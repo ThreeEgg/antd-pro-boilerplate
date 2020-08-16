@@ -12,7 +12,7 @@ class StrategyEditor extends Component {
   }
 
   componentDidMount() {
-    this.initJsPlumbInstance();
+    // this.initJsPlumbInstance();
   }
 
 
@@ -69,7 +69,13 @@ class StrategyEditor extends Component {
         {
           subStrategyList.map((subStrategyItem, index) => {
             return (
-              <SubStrategy propsId={`list-${index + 1}`} subStrategyItem={subStrategyItem} key={subStrategyItem.id} AllJudgeTypeList={AllJudgeTypeList} />
+              <SubStrategy
+                propsId={`list-${index + 1}`}
+                subStrategyItem={subStrategyItem}
+                key={subStrategyItem.id}
+                AllJudgeTypeList={AllJudgeTypeList}
+
+              />
             )
           })
         }

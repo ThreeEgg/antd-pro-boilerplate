@@ -10,7 +10,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    setCookie('SHAREJSESSIONID', '4cff441f-09f5-48ec-92be-a5d5d310912c')
+    setCookie('SHAREJSESSIONID', 'cb7344b0-0fea-405b-aef1-5c9184678821')
     setCookie('copyFlag', 'true')
     setCookie('lxcs_ck_user_departmentcd', '')
     setCookie('lxcs_ck_user_departmenttopcd', '')

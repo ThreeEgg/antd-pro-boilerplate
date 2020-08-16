@@ -43,7 +43,7 @@ class JudgeTypeGather extends Component {
 
   render() {
     const { callTimeLimit, remindUser, progressHidden, followInterval, followIntervalType, } = this.state;
-    const { strategyRuleItem, propsIndex } = this.props;
+    const { strategyRuleItem, propsIndex, AllJudgeTypeList = [] } = this.props;
     return (
       <div className={classNames(styles.JudgeTypeGather, 'source')}>
         <div className={styles.gatherTitleBox}>
@@ -59,7 +59,9 @@ class JudgeTypeGather extends Component {
           {
             strategyRuleItem.judgeTypeList.map(item => {
               return (
-                <Tag color="rgb(22,155,213)" key={item}>{item}</Tag>
+                <Tag color="rgb(22,155,213)" key={item}>{
+                  AllJudgeTypeList.find(demo => demo.nameCd === item).name
+                }</Tag>
               )
             })
           }
@@ -71,18 +73,23 @@ class JudgeTypeGather extends Component {
               value={callTimeLimit}
               min={0}
               max={999}
+              onChange={value => {
+                this.setState({
+                  callTimeLimit: value
+                })
+              }}
             />
           </div>
           <div className="formInputItem">
             <span>本次拨打结果提示人工</span>
-            <Radio.Group value={remindUser}>
+            <Radio.Group value={remindUser} onChange={e => this.setState({ remindUser: e.target.value })}>
               <Radio value>是</Radio>
               <Radio value={false}>否</Radio>
             </Radio.Group>
           </div>
           <div className="formInputItem">
             <span>本次拨打结果隐藏催记</span>
-            <Radio.Group value={progressHidden}>
+            <Radio.Group value={progressHidden} onChange={e => this.setState({ progressHidden: e.target.value })}>
               <Radio value>是</Radio>
               <Radio value={false}>否</Radio>
             </Radio.Group>
@@ -90,8 +97,8 @@ class JudgeTypeGather extends Component {
           <div className="formInputItem">
             <span>下次拨打跟进间隔</span>
             <div className="multipleBox">
-              <Input style={{ width: 100 }} value={followInterval} />
-              <Select style={{ width: 80, marginLeft: 5 }} value={followIntervalType}>
+              <Input style={{ width: 100 }} value={followInterval} onChange={e => this.setState({ followInterval: e.target.value })} />
+              <Select style={{ width: 80, marginLeft: 5 }} value={followIntervalType} onChange={value => this.setState({ followIntervalType: value })}>
                 <Option value={1}>天</Option>
                 <Option value={2}>小时</Option>
               </Select>
