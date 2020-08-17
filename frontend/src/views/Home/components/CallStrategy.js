@@ -20,7 +20,7 @@ const { Option } = Select;
 class CallStrategy extends Component {
 
   state = {
-    strategy: dataSources,
+    strategy: {},
     ForbidInitialValues: {
       waitDivideMoneyOperator: '<=',
       waitDivideMoneyPercent: 100,
@@ -40,14 +40,22 @@ class CallStrategy extends Component {
       holidayStop: 0,
     },
     routeList: [],
-    strategyId: getParameter('strategyId')
+    strategyId: getParameter('strategyId'),
   }
 
   forbidCallRef = createRef()
 
+  strategyDetailForm = createRef()
+
   componentDidMount() {
-    // this.getJudgeType()
-    // this.getRouteList()
+    this.getJudgeType()
+    this.getRouteList()
+  }
+
+  setInitialValues = ForbidInitialValues => {
+    this.setState({
+      ForbidInitialValues
+    })
   }
 
   getRouteList = async () => {
@@ -67,7 +75,7 @@ class CallStrategy extends Component {
         AllJudgeTypeList: result
       }, () => {
         if (strategyId) {
-          // this.getStrategyDetail()
+          this.getStrategyDetail()
         }
 
       })
@@ -78,8 +86,16 @@ class CallStrategy extends Component {
     const { strategyId } = this.state;
     const { success, result } = await strategyServices.getStrategyDetail({ strategyId })
     if (success) {
+      const { setFieldsValue } = this.strategyDetailForm.current;
+      setFieldsValue({
+        strategyName: result.strategyName,
+        callTimeLimit: result.callTimeLimit,
+        areaIdList: result.areaIdList,
+        firstCallInterval: result.firstCallInterval,
+        comment: result.comment,
+      })
       this.setState({
-        strategy: this.handleStrategy(result)
+        strategy: this.handleStrategy(result),
       })
     }
   }
@@ -113,6 +129,13 @@ class CallStrategy extends Component {
   }
 
   goToForbidStrategy = () => {
+    const { strategy: { stopCallTask } } = this.state;
+    const ForbidInitialValues = stopCallTask;
+    ForbidInitialValues.caseType = typeof (ForbidInitialValues.caseType) === 'string' ? ForbidInitialValues.caseType.split(',') : ForbidInitialValues.caseType;
+    ForbidInitialValues.status = typeof (ForbidInitialValues.status) === 'string' ? ForbidInitialValues.status.split(',') : ForbidInitialValues.status;
+    this.setState({
+      ForbidInitialValues
+    })
     this.forbidCallRef.current.handleOk()
   }
 
@@ -122,7 +145,9 @@ class CallStrategy extends Component {
     params.strategyType = 1;
 
     if (strategyId) {   // 更新
-      params.stopCallTask = ForbidInitialValues
+      // params.stopCallTask = ForbidInitialValues
+      params.id = strategyId;
+      this.updateStrategy(params)
     } else {  // 新建
       ForbidInitialValues.waitDivideMoneyOperator = '<=';
       ForbidInitialValues.waitDivideMoneyPercent = 100;
@@ -132,36 +157,23 @@ class CallStrategy extends Component {
       params.stopCallTask = ForbidInitialValues
       this.addStrategy(params)
     }
-    console.log('params', params)
+  }
+
+  updateStrategy = async (params) => {
+    const { success, message: msg } = await strategyServices.updateStrategy(params)
+    if (success) {
+      message.success(msg)
+    }
   }
 
   addStrategy = async (params) => {
     const { success, result, message: msg } = await strategyServices.addStrategy(params)
     if (success) {
       message.success(msg)
-      result.subStrategyList = [
-        {
-          id: '4561235',
-          name: '子策略名称',
-          strategyId: '策略id',
-          unusedJudgeTypeList: [],
-          strategyRuleList: [
-            {
-              ruleId: '规则id1',
-              ruleName: '暂定为这个',
-              judgeTypeList: ['身体异常'],
-              callTimeLimit: 999,
-              remindUser: true,
-              progressHidden: true,
-              followInterval: 2,
-              followIntervalType: 1, // 跟进间隔时间类型，1:天，2:小时
-              nextSubStrategyId: '箭头关联的子策略id'
-            },
-          ]
-        }
-      ]
+      result.subStrategyList = []
       this.setState({
-        strategy: result
+        strategy: result,
+        strategyId: result.id
       })
     }
   }
@@ -187,12 +199,12 @@ class CallStrategy extends Component {
 
   render() {
     const { strategy: { subStrategyList }, ForbidInitialValues, AllJudgeTypeList,
-      routeList,
+      routeList, strategyId, strategy: { stopCallTask }
     } = this.state
 
     return (
       <div className={styles.CallStrategy}>
-        <Form className={styles.baseInfoInput} onFinish={this.onFinish}>
+        <Form className={styles.baseInfoInput} onFinish={this.onFinish} ref={this.strategyDetailForm}>
           <div className={styles.titleBox}>
             <div className="title">
               <span>拨打策略集-智能对话</span>
@@ -259,10 +271,21 @@ class CallStrategy extends Component {
         </Form>
         <div className={styles.svgBox}>
           <DragDropContext onDragEnd={this.onDragEnd}>
-            <StrategyEditor subStrategyList={subStrategyList} AllJudgeTypeList={AllJudgeTypeList} />
+            {strategyId && <StrategyEditor
+              subStrategyList={subStrategyList}
+              AllJudgeTypeList={AllJudgeTypeList}
+              getStrategyDetail={this.getStrategyDetail}
+              strategyId={strategyId}
+            />}
           </DragDropContext>
         </div>
-        <ForbidCallStrategy ref={this.forbidCallRef} initialValues={ForbidInitialValues} callStrategy={this} />
+        <ForbidCallStrategy
+          ref={this.forbidCallRef}
+          initialValues={ForbidInitialValues}
+          setInitialValues={this.setInitialValues}
+          strategyId={strategyId}
+          forbidCallTaskId={stopCallTask ? stopCallTask.id : null}
+        />
       </div>
     )
   }

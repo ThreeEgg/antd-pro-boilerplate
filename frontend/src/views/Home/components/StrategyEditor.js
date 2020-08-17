@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 // import * as strategyServices from '@/services/strategy'
 import { PlusCircleTwoTone } from '@ant-design/icons';
-import { Modal, Form, Input } from 'antd'
+import { Modal, Form, Input, message } from 'antd'
+import * as strategyServices from '@/services/strategy'
 import styles from './StrategyEditor.less';
 import SubStrategy from './SubStrategy';
 
@@ -10,7 +11,7 @@ class StrategyEditor extends Component {
 
   state = {
     clientHeight: document.documentElement.clientHeight,
-    subStrategyVisible: true,
+    subStrategyVisible: false,
     connectorInstance: null,
   }
 
@@ -57,9 +58,18 @@ class StrategyEditor extends Component {
     })
   }
 
-  addSubStrategy = () => {
-
-  }
+  /* addSubStrategy = async (paramsData) => {
+    const { strategyId } = this.props
+    const params = {
+      ...paramsData,
+      strategyId,
+      strategyRuleList: [],
+    }
+    const { success, message: msg } = await strategyServices.addSubStrategy(params)
+    if (success) {
+      message.success(msg)
+    }
+  } */
 
   handleCancel = () => {
     this.setState({
@@ -67,13 +77,23 @@ class StrategyEditor extends Component {
     })
   }
 
-  onFinish = paramsData => {
-    const params = paramsData;
-    console.log('params', params)
+  onFinish = async (paramsData) => {
+    const { strategyId, getStrategyDetail } = this.props
+    const params = {
+      name: paramsData.name,
+      strategyId,
+      strategyRuleList: [],
+    }
+    const { success, result, message: msg } = await strategyServices.addSubStrategy(params)
+    if (success) {
+      message.success(msg)
+      getStrategyDetail();
+      this.handleCancel()
+    }
   }
 
   render() {
-    const { sourceClassName, targetClassName, sourceSetClassName } = this;
+    const { sourceClassName, targetClassName, sourceSetClassName, addSubStrategyShow } = this;
     const { clientHeight, connectorInstance, subStrategyVisible } = this.state;
     const { subStrategyList = [], AllJudgeTypeList = [] } = this.props
     return (
@@ -89,7 +109,10 @@ class StrategyEditor extends Component {
                 propsId={`list-${index + 1}`}
                 subStrategyItem={subStrategyItem}
                 key={subStrategyItem.id}
-                AllJudgeTypeList={AllJudgeTypeList} />
+                AllJudgeTypeList={AllJudgeTypeList}
+                addSubStrategyShow={addSubStrategyShow}
+                getStrategyDetail={this.props.getStrategyDetail}
+              />
             )
           }) :
             <div className={styles.empty} onClick={this.addSubStrategyShow}>
@@ -101,7 +124,7 @@ class StrategyEditor extends Component {
         <Modal
           title="新增子策略"
           visible={subStrategyVisible}
-          onOk={this.addSubStrategy}
+          // onOk={this.addSubStrategy}
           onCancel={this.handleCancel}
           okButtonProps={{
             form: 'subStrategyForm',

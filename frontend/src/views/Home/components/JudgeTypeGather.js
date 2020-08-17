@@ -42,6 +42,7 @@ class JudgeTypeGather extends Component {
   render() {
     const { callTimeLimit, remindUser, progressHidden, followInterval, followIntervalType, } = this.state;
     const { strategyRuleItem, propsIndex, AllJudgeTypeList = [] } = this.props;
+    const { judgeTypeList = [] } = strategyRuleItem
     return (
       <div className={classNames(styles.JudgeTypeGather, 'source')}>
         <div className={styles.gatherTitleBox}>
@@ -55,7 +56,7 @@ class JudgeTypeGather extends Component {
         </div>
         <div className={styles.judgeBox}>
           {
-            strategyRuleItem.judgeTypeList.map(item => {
+            judgeTypeList.length > 0 && judgeTypeList.map(item => {
               return (
                 <Tag color="rgb(22,155,213)" key={item}>{
                   AllJudgeTypeList.find(demo => demo.nameCd === item) && AllJudgeTypeList.find(demo => demo.nameCd === item).name

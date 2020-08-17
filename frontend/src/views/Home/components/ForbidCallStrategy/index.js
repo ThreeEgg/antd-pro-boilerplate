@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import {
   Form, Select, Input, Checkbox, Row,
-  Col, Radio, TimePicker, InputNumber, Modal
+  Col, Radio, TimePicker, InputNumber, Modal, message,
 } from 'antd';
 import moment from '@/utils/moment'
+import * as strategyServices from '@/services/strategy'
 import styles from './index.less'
 
 const { Option } = Select
@@ -32,18 +33,31 @@ class ForbidCallStrategy extends Component {
 
   onFinish = paramsData => {
     const { waitDivideMoneyOperator, waitDivideMoneyPercent } = this.state;
-    const { callStrategy } = this.props;
+    const { setInitialValues, strategyId, forbidCallTaskId: id } = this.props;
     const params = paramsData;
     params.waitDivideMoneyOperator = waitDivideMoneyOperator;
     params.waitDivideMoneyPercent = waitDivideMoneyPercent;
     params.dayStopCallTime = moment(params.dayStopCallTime).format('HH:mm');
     params.caseType = params.caseType.join(',');
     params.status = params.status.join(',');
-    callStrategy.setState({
-      ForbidInitialValues: params
-    })
+    setInitialValues(params)
 
+    params.strategyId = strategyId;
+    params.id = id
+
+    if (strategyId) {
+      this.updateStopCallTask(params);
+      return
+    }
     this.handleCancel()
+  }
+
+  updateStopCallTask = async (params) => {
+    const { success, message: msg } = await strategyServices.updateStopCallTask(params);
+    if (success) {
+      message.success(msg)
+      this.handleCancel()
+    }
   }
 
   handleOk = () => {

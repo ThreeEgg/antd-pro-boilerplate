@@ -10,7 +10,8 @@ const axios = Axios.create({
 axios.defaults.baseURL = '/lxcs-admin'
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.interceptors.request.use(
-  config => {
+  configData => {
+    const config = configData
     if (config.method === 'post') {
       config.data = JSON.stringify(config.data);
     }
