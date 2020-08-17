@@ -4,6 +4,7 @@ export default {
    */
   strategyDetail: '/xiaoGoRobot/strategy/getStrategy',// 获取策略详情
   addStrategy: '/xiaoGoRobot/strategy/saveStrategy',// 保存新增策略
+  addSubStrategy: '/xiaoGoRobot/strategy/saveSubStrategy',// 保存新增策略
 
   judgeType: '/xiaoGoRobot/strategy/listJudgeTypes',// 获取判断类型
 

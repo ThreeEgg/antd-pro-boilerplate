@@ -10,6 +10,10 @@ export const addStrategy = params => {
   return axios.post(`${api.addStrategy}`, params)
 }
 
+export const addSubStrategy = params => {
+  return axios.post(`${api.addSubStrategy}`, params)
+}
+
 export const getJudgeType = () => {
   return axios.get(`${api.judgeType}`)
 }

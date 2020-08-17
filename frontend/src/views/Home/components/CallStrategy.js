@@ -2,7 +2,7 @@ import React, { Component, createRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import {
   Button, Input, Select, Row, Col,
-  InputNumber, Form
+  InputNumber, Form, message
 } from 'antd'
 import moment from '@/utils/moment'
 import * as strategyServices from '@/services/strategy'
@@ -232,7 +232,11 @@ class CallStrategy extends Component {
     if (strategyId) {   // 更新
       params.stopCallTask = ForbidInitialValues
     } else {  // 新建
-      this.forbidCallRef.current.onFinish()
+      ForbidInitialValues.waitDivideMoneyOperator = '<=';
+      ForbidInitialValues.waitDivideMoneyPercent = 100;
+      ForbidInitialValues.dayStopCallTime = moment(ForbidInitialValues.dayStopCallTime).format('HH:mm');
+      ForbidInitialValues.caseType = typeof (ForbidInitialValues.caseType) === 'string' ? ForbidInitialValues.caseType : ForbidInitialValues.caseType.join(',');
+      ForbidInitialValues.status = typeof (ForbidInitialValues.status) === 'string' ? ForbidInitialValues.status : ForbidInitialValues.status.join(',');
       params.stopCallTask = ForbidInitialValues
       this.addStrategy(params)
     }
@@ -240,8 +244,34 @@ class CallStrategy extends Component {
   }
 
   addStrategy = async (params) => {
-    const { success, result } = await strategyServices.addStrategy(params)
-
+    const { success, result, message: msg } = await strategyServices.addStrategy(params)
+    if (success) {
+      message.success(msg)
+      result.subStrategyList = [
+        {
+          id: '4561235',
+          name: '子策略名称',
+          strategyId: '策略id',
+          unusedJudgeTypeList: [],
+          strategyRuleList: [
+            {
+              ruleId: '规则id1',
+              ruleName: '暂定为这个',
+              judgeTypeList: ['身体异常'],
+              callTimeLimit: 999,
+              remindUser: true,
+              progressHidden: true,
+              followInterval: 2,
+              followIntervalType: 1, // 跟进间隔时间类型，1:天，2:小时
+              nextSubStrategyId: '箭头关联的子策略id'
+            },
+          ]
+        }
+      ]
+      this.setState({
+        strategy: result
+      })
+    }
   }
 
   selectRouteLimit = (rule, value, callback) => {
@@ -337,7 +367,7 @@ class CallStrategy extends Component {
         </Form>
         <div className={styles.svgBox}>
           <DragDropContext onDragEnd={this.onDragEnd}>
-            {subStrategyList && <StrategyEditor subStrategyList={subStrategyList} AllJudgeTypeList={AllJudgeTypeList} />}
+            <StrategyEditor subStrategyList={subStrategyList} AllJudgeTypeList={AllJudgeTypeList} />
           </DragDropContext>
         </div>
         <ForbidCallStrategy ref={this.forbidCallRef} initialValues={ForbidInitialValues} callStrategy={this} />

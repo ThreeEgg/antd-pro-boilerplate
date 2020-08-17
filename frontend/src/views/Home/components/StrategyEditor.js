@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import * as strategyServices from '@/services/strategy'
+import { PlusCircleTwoTone } from '@ant-design/icons';
+import { Modal, Form, Input } from 'antd'
 import styles from './StrategyEditor.less';
-import SubStrategy from './SubStrategy'
+import SubStrategy from './SubStrategy';
 
 class StrategyEditor extends Component {
 
@@ -9,6 +11,7 @@ class StrategyEditor extends Component {
 
   state = {
     clientHeight: document.documentElement.clientHeight,
+    subStrategyVisible: true,
   }
 
   componentDidMount() {
@@ -61,13 +64,34 @@ class StrategyEditor extends Component {
     });
   }
 
+  addSubStrategyShow = () => {
+    this.setState({
+      subStrategyVisible: true
+    })
+  }
+
+  addSubStrategy = () => {
+
+  }
+
+  handleCancel = () => {
+    this.setState({
+      subStrategyVisible: false
+    })
+  }
+
+  onFinish = paramsData => {
+    const params = paramsData;
+    console.log('params', params)
+  }
+
   render() {
-    const { clientHeight, } = this.state;
+    const { clientHeight, subStrategyVisible } = this.state;
     const { subStrategyList = [], AllJudgeTypeList = [] } = this.props
     return (
-      <div className={styles.container} style={{ height: clientHeight - 265 }} id="editor">
+      <div className={styles.container} style={{ height: clientHeight - 300 }} id="editor">
         {
-          subStrategyList.map((subStrategyItem, index) => {
+          subStrategyList.length > 0 ? subStrategyList.map((subStrategyItem, index) => {
             return (
               <SubStrategy
                 propsId={`list-${index + 1}`}
@@ -77,8 +101,36 @@ class StrategyEditor extends Component {
 
               />
             )
-          })
+          }) :
+            <div className={styles.empty} onClick={this.addSubStrategyShow}>
+              <PlusCircleTwoTone />
+            </div>
         }
+
+        {/* 新增子策略弹窗 */}
+        <Modal
+          title="新增子策略"
+          visible={subStrategyVisible}
+          onOk={this.addSubStrategy}
+          onCancel={this.handleCancel}
+          okButtonProps={{
+            form: 'subStrategyForm',
+            htmlType: 'submit',
+          }}
+        >
+          <Form name="subStrategyForm" onFinish={this.onFinish}>
+            <Form.Item
+              label="子拨打策略名称"
+              name="name"
+              rules={[
+                { required: true, message: '请输入子拨打策略名称' },
+              ]}
+            >
+              <Input placeholder="请输入子拨打策略名称" maxLength={40} />
+            </Form.Item>
+          </Form>
+
+        </Modal>
       </div>
     );
   }

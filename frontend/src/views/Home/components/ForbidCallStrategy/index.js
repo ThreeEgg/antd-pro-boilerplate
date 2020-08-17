@@ -13,7 +13,7 @@ class ForbidCallStrategy extends Component {
   state = {
     forbidCallVisible: false,
     waitDivideMoneyOperator: '<=',
-    waitDivideMoneyPercent: '100%',
+    waitDivideMoneyPercent: 100,
   }
 
   componentDidMount() {
@@ -30,9 +30,10 @@ class ForbidCallStrategy extends Component {
     }
   }
 
-  onFinish = params => {
+  onFinish = paramsData => {
     const { waitDivideMoneyOperator, waitDivideMoneyPercent } = this.state;
     const { callStrategy } = this.props;
+    const params = paramsData;
     params.waitDivideMoneyOperator = waitDivideMoneyOperator;
     params.waitDivideMoneyPercent = waitDivideMoneyPercent;
     params.dayStopCallTime = moment(params.dayStopCallTime).format('HH:mm');
