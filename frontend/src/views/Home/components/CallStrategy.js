@@ -8,6 +8,7 @@ import moment from '@/utils/moment'
 import * as strategyServices from '@/services/strategy'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { getParameter } from '@/utils/tools'
+import dataSources from '@/utils/dataSource'
 import styles from './CallStrategy.less'
 import StrategyEditor from "./StrategyEditor";
 import ForbidCallStrategy from './ForbidCallStrategy'
@@ -19,116 +20,7 @@ const { Option } = Select;
 class CallStrategy extends Component {
 
   state = {
-    strategy: {
-      /* id: '策略id',
-      strategyName: '策略名称',
-      callTimeLimit: 999,
-      weekendStop: true,
-      holidayStop: true,
-      areaIdList: [1, 2, 3, 4, 5],
-      firstCallInterval: 0,
-      comment: '策略说明',
-      subStrategyList: [
-        {
-          id: '4561235',
-          name: '子策略名称',
-          strategyId: '策略id',
-          unusedJudgeTypeList: [],
-          strategyRuleList: [
-            {
-              ruleId: '规则id1',
-              ruleName: '暂定为这个',
-              judgeTypeList: ['身体异常'],
-              callTimeLimit: 999,
-              remindUser: true,
-              progressHidden: true,
-              followInterval: 2,
-              followIntervalType: 1, // 跟进间隔时间类型，1:天，2:小时
-              nextSubStrategyId: '箭头关联的子策略id'
-            },
-            {
-              ruleId: '规则id2',
-              ruleName: '不知道',
-              judgeTypeList: ['承诺还款'],
-              callTimeLimit: 777,
-              remindUser: true,
-              progressHidden: false,
-              followInterval: 48,
-              followIntervalType: 2, // 跟进间隔时间类型，1:天，2:小时
-              nextSubStrategyId: '箭头关联的子策略id'
-            },
-            {
-              ruleId: '规则id3',
-              ruleName: '说了不知道了',
-              judgeTypeList: ['承诺还款'],
-              callTimeLimit: 888,
-              remindUser: true,
-              progressHidden: false,
-              followInterval: 4,
-              followIntervalType: 2, // 跟进间隔时间类型，1:天，2:小时
-              nextSubStrategyId: '箭头关联的子策略id'
-            },
-          ]
-        },
-        {
-          id: '456123556',
-          name: '子策略名称',
-          strategyId: '策略id',
-          unusedJudgeTypeList: [],
-          strategyRuleList: [
-            {
-              ruleId: '规则id',
-              ruleName: '暂定为这个',
-              judgeTypeList: ['本人'],
-              callTimeLimit: 999,
-              remindUser: true,
-              progressHidden: true,
-              followInterval: 24,
-              followIntervalType: 1, // 跟进间隔时间类型，1:天，2:小时
-              nextSubStrategyId: '箭头关联的子策略id'
-            }
-          ]
-        },
-        {
-          id: '45612357',
-          name: '子策略名称',
-          strategyId: '策略id',
-          unusedJudgeTypeList: [],
-          strategyRuleList: [
-            {
-              ruleId: '规则id',
-              ruleName: '暂定为这个',
-              judgeTypeList: ['本人'],
-              callTimeLimit: 999,
-              remindUser: true,
-              progressHidden: true,
-              followInterval: 24,
-              followIntervalType: 1, // 跟进间隔时间类型，1:天，2:小时
-              nextSubStrategyId: '箭头关联的子策略id'
-            }
-          ]
-        },
-        {
-          id: '45612354',
-          name: '子策略名称',
-          strategyId: '策略id',
-          unusedJudgeTypeList: [],
-          strategyRuleList: [
-            {
-              ruleId: '规则id',
-              ruleName: '暂定为这个',
-              judgeTypeList: ['本人'],
-              callTimeLimit: 999,
-              remindUser: true,
-              progressHidden: true,
-              followInterval: 24,
-              followIntervalType: 1, // 跟进间隔时间类型，1:天，2:小时
-              nextSubStrategyId: '箭头关联的子策略id'
-            }
-          ]
-        }
-      ] */
-    },
+    strategy: dataSources,
     ForbidInitialValues: {
       waitDivideMoneyOperator: '<=',
       waitDivideMoneyPercent: 100,
@@ -154,8 +46,8 @@ class CallStrategy extends Component {
   forbidCallRef = createRef()
 
   componentDidMount() {
-    this.getJudgeType()
-    this.getRouteList()
+    // this.getJudgeType()
+    // this.getRouteList()
   }
 
   getRouteList = async () => {
@@ -175,7 +67,7 @@ class CallStrategy extends Component {
         AllJudgeTypeList: result
       }, () => {
         if (strategyId) {
-          this.getStrategyDetail()
+          // this.getStrategyDetail()
         }
 
       })

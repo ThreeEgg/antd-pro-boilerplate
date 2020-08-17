@@ -1,7 +1,7 @@
-import {Button, Tag} from 'antd'
+import { Button, Tag } from 'antd'
 import classNames from 'classnames';
-import React, {Component} from 'react'
-import {Draggable, Droppable} from 'react-beautiful-dnd'
+import React, { Component } from 'react'
+import { Draggable, Droppable } from 'react-beautiful-dnd'
 import JudgeTypeGather from './JudgeTypeGather'
 import styles from './SubStrategy.less';
 
@@ -38,7 +38,7 @@ class SubStrategy extends Component {
   componentDidUpdate = (prevProps) => {
     if (!prevProps.connector) {
       if (prevProps.connector !== this.props.connector) {
-        const {sourceClassName, targetClassName, sourceSetClassName, propsId} = this.props;
+        const { sourceClassName, targetClassName, sourceSetClassName, propsId } = this.props;
         const container = document.getElementById(propsId);
         console.log(Array.from(container.querySelectorAll(sourceSetClassName)))
         Array.from(container.querySelectorAll(sourceSetClassName)).forEach(this.makeList);
@@ -49,19 +49,19 @@ class SubStrategy extends Component {
   }
 
   render() {
-    const {propsId, subStrategyItem, AllJudgeTypeList = [], sourceClassName, targetClassName, sourceSetClassName} = this.props;
-    const {strategyRuleList = []} = subStrategyItem;
-    const {judgeTypeList} = this.state
+    const { propsId, subStrategyItem, AllJudgeTypeList = [], sourceClassName, targetClassName, sourceSetClassName } = this.props;
+    const { strategyRuleList = [] } = subStrategyItem;
+    const { judgeTypeList } = this.state
     return (
       <Droppable droppableId={subStrategyItem.id}>
         {(provided, snapshot) => (
           <div className={styles.item} id={propsId}
             // provided.droppableProps应用的相同元素.
-               {...provided.droppableProps}
+            {...provided.droppableProps}
             // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
-               ref={provided.innerRef}
+            ref={provided.innerRef}
           >
-            <div className={classNames(styles.connectorHandler, targetClassName)}/>
+            <div className={classNames(styles.connectorHandler, targetClassName)} />
             <div className={styles.titleBox}>
               <div className="title">
                 <span>子拨打策略1：</span>
@@ -94,7 +94,7 @@ class SubStrategy extends Component {
                               isDragging={snapshot1.isDragging}
                             >
                               <Tag color="rgb(22,155,213)" key={item}>{
-                                AllJudgeTypeList.find(demo => demo.nameCd === item).name
+                                AllJudgeTypeList.find(demo => demo.nameCd === item) && AllJudgeTypeList.find(demo => demo.nameCd === item).name
                               }</Tag>
                             </span>
                           )
@@ -112,7 +112,7 @@ class SubStrategy extends Component {
                 strategyRuleList.map((strategyRuleItem, index) => {
                   return (
                     <JudgeTypeGather strategyRuleItem={strategyRuleItem} key={strategyRuleItem.ruleId}
-                                     propsIndex={index} AllJudgeTypeList={AllJudgeTypeList}/>
+                      propsIndex={index} AllJudgeTypeList={AllJudgeTypeList} />
                   )
                 })
               }

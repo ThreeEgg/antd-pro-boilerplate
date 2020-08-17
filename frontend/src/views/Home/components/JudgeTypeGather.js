@@ -1,9 +1,9 @@
-import {Button, Input, InputNumber, Radio, Select, Tag,} from 'antd'
+import { Button, Input, InputNumber, Radio, Select, Tag, } from 'antd'
 import classNames from 'classnames'
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import styles from './JudgeTypeGather.less'
 
-const {Option} = Select
+const { Option } = Select
 
 class JudgeTypeGather extends Component {
 
@@ -16,7 +16,7 @@ class JudgeTypeGather extends Component {
   }
 
   componentDidMount() {
-    const {strategyRuleItem} = this.props
+    const { strategyRuleItem } = this.props
     this.setState({
       callTimeLimit: strategyRuleItem.callTimeLimit,
       remindUser: strategyRuleItem.remindUser,
@@ -28,7 +28,7 @@ class JudgeTypeGather extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.strategyRuleItem !== this.props.strategyRuleItem) {
-      const {strategyRuleItem} = this.props
+      const { strategyRuleItem } = this.props
       this.setState({
         callTimeLimit: strategyRuleItem.callTimeLimit,
         remindUser: strategyRuleItem.remindUser,
@@ -40,8 +40,8 @@ class JudgeTypeGather extends Component {
   }
 
   render() {
-    const {callTimeLimit, remindUser, progressHidden, followInterval, followIntervalType,} = this.state;
-    const {strategyRuleItem, propsIndex, AllJudgeTypeList = []} = this.props;
+    const { callTimeLimit, remindUser, progressHidden, followInterval, followIntervalType, } = this.state;
+    const { strategyRuleItem, propsIndex, AllJudgeTypeList = [] } = this.props;
     return (
       <div className={classNames(styles.JudgeTypeGather, 'source')}>
         <div className={styles.gatherTitleBox}>
@@ -58,7 +58,7 @@ class JudgeTypeGather extends Component {
             strategyRuleItem.judgeTypeList.map(item => {
               return (
                 <Tag color="rgb(22,155,213)" key={item}>{
-                  AllJudgeTypeList.find(demo => demo.nameCd === item).name
+                  AllJudgeTypeList.find(demo => demo.nameCd === item) && AllJudgeTypeList.find(demo => demo.nameCd === item).name
                 }</Tag>
               )
             })
@@ -80,14 +80,14 @@ class JudgeTypeGather extends Component {
           </div>
           <div className="formInputItem">
             <span>本次拨打结果提示人工</span>
-            <Radio.Group value={remindUser} onChange={e => this.setState({remindUser: e.target.value})}>
+            <Radio.Group value={remindUser} onChange={e => this.setState({ remindUser: e.target.value })}>
               <Radio value>是</Radio>
               <Radio value={false}>否</Radio>
             </Radio.Group>
           </div>
           <div className="formInputItem">
             <span>本次拨打结果隐藏催记</span>
-            <Radio.Group value={progressHidden} onChange={e => this.setState({progressHidden: e.target.value})}>
+            <Radio.Group value={progressHidden} onChange={e => this.setState({ progressHidden: e.target.value })}>
               <Radio value>是</Radio>
               <Radio value={false}>否</Radio>
             </Radio.Group>
@@ -95,10 +95,10 @@ class JudgeTypeGather extends Component {
           <div className="formInputItem">
             <span>下次拨打跟进间隔</span>
             <div className="multipleBox">
-              <Input style={{width: 100}} value={followInterval}
-                     onChange={e => this.setState({followInterval: e.target.value})}/>
-              <Select style={{width: 80, marginLeft: 5}} value={followIntervalType}
-                      onChange={value => this.setState({followIntervalType: value})}>
+              <Input style={{ width: 100 }} value={followInterval}
+                onChange={e => this.setState({ followInterval: e.target.value })} />
+              <Select style={{ width: 80, marginLeft: 5 }} value={followIntervalType}
+                onChange={value => this.setState({ followIntervalType: value })}>
                 <Option value={1}>天</Option>
                 <Option value={2}>小时</Option>
               </Select>
