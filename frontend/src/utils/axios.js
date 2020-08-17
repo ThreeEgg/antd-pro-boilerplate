@@ -1,6 +1,6 @@
 import Axios from 'axios';
 // import qs from 'qs';
-import { notification, message } from 'antd';
+import { notification } from 'antd';
 
 const axios = Axios.create({
   validateStatus(status) {
@@ -67,7 +67,7 @@ axios.interceptors.response.use(
     //   localStorage.clear();
     //   window.location.reload();
     // }
-    return response.data ? response.data : response;
+    return response.data;
   },
   error => {
     notification.error({

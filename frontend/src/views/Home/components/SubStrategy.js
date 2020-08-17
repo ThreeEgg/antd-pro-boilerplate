@@ -47,18 +47,19 @@ class SubStrategy extends Component {
               <span>判断类型</span>
               <div className={styles.judgeTypeBox}>
                 {
-                  subStrategyItem.unusedJudgeTypeList.map(item => {
+                  subStrategyItem.unusedJudgeTypeList.map((item, index) => {
                     return (
                       <Draggable
                         draggableId={item}
+                        index={index}
                       >
                         {
-                          (provided, snapshot) => (
+                          (provided1, snapshot1) => (
                             <span
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              ref={provided.innerRef}
-                              isDragging={snapshot.isDragging}
+                              {...provided1.draggableProps}
+                              {...provided1.dragHandleProps}
+                              ref={provided1.innerRef}
+                              isDragging={snapshot1.isDragging}
                             >
                               <Tag color="rgb(22,155,213)" key={item}>{
                                 AllJudgeTypeList.find(demo => demo.nameCd === item).name

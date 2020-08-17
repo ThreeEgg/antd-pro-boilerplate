@@ -7,6 +7,7 @@ import {
 import moment from '@/utils/moment'
 import * as strategyServices from '@/services/strategy'
 import { DragDropContext } from 'react-beautiful-dnd'
+import { getParameter } from '@/utils/tools'
 import styles from './CallStrategy.less'
 import StrategyEditor from "./StrategyEditor";
 import ForbidCallStrategy from './ForbidCallStrategy'
@@ -128,7 +129,7 @@ class CallStrategy extends Component {
         }
       ] */
     },
-    initialValues: {
+    ForbidInitialValues: {
       waitDivideMoneyOperator: '<=',
       waitDivideMoneyPercent: 100,
       caseType: ['B', 'C'],
@@ -146,43 +147,44 @@ class CallStrategy extends Component {
       weekendStop: 0,
       holidayStop: 0,
     },
-    routeList: []
+    routeList: [],
+    strategyId: getParameter('strategyId')
   }
 
   forbidCallRef = createRef()
 
   componentDidMount() {
-
     this.getJudgeType()
     this.getRouteList()
   }
 
   getRouteList = async () => {
-    const result = await strategyServices.getRouteList()
-    this.setState({
-      routeList: result
-    })
-    console.log('data', result)
-    /* if (success) {
+    const { success, result } = await strategyServices.getRouteList()
+    if (success) {
       this.setState({
         routeList: result
       })
-    } */
+    }
   }
 
   getJudgeType = async () => {
+    const { strategyId } = this.state;
     const { success, result } = await strategyServices.getJudgeType();
     if (success) {
       this.setState({
         AllJudgeTypeList: result
       }, () => {
-        this.getStrategyDetail()
+        if (strategyId) {
+          this.getStrategyDetail()
+        }
+
       })
     }
   }
 
   getStrategyDetail = async () => {
-    const { success, result } = await strategyServices.getStrategyDetail({ strategyId: '5f35f497f70a6b4fdd7b47f7' })
+    const { strategyId } = this.state;
+    const { success, result } = await strategyServices.getStrategyDetail({ strategyId })
     if (success) {
       this.setState({
         strategy: this.handleStrategy(result)
@@ -222,8 +224,24 @@ class CallStrategy extends Component {
     this.forbidCallRef.current.handleOk()
   }
 
-  onFinish = params => {
+  onFinish = paramsData => {
+    const params = paramsData || {};
+    const { strategyId, ForbidInitialValues } = this.state;
+    params.strategyType = 1;
+
+    if (strategyId) {   // 更新
+      params.stopCallTask = ForbidInitialValues
+    } else {  // 新建
+      this.forbidCallRef.current.onFinish()
+      params.stopCallTask = ForbidInitialValues
+      this.addStrategy(params)
+    }
     console.log('params', params)
+  }
+
+  addStrategy = async (params) => {
+    const { success, result } = await strategyServices.addStrategy(params)
+
   }
 
   selectRouteLimit = (rule, value, callback) => {
@@ -234,9 +252,9 @@ class CallStrategy extends Component {
     if (value.length > 10) {
       callback('最多选择十条线路')
     } else if (value.length === 0) {
-      callback('')
+      callback()
     } else {
-      callback('')
+      callback()
     }
   }
 
@@ -246,7 +264,7 @@ class CallStrategy extends Component {
   }
 
   render() {
-    const { strategy: { subStrategyList }, initialValues, AllJudgeTypeList,
+    const { strategy: { subStrategyList }, ForbidInitialValues, AllJudgeTypeList,
       routeList,
     } = this.state
 
@@ -259,7 +277,7 @@ class CallStrategy extends Component {
               <Button type="link" onClick={this.goToForbidStrategy}>设置禁止&顺延拨打管理</Button>
             </div>
             <div className="btnBox">
-              <Button>返回</Button>
+              {/* <Button>返回</Button> */}
               <Form.Item>
                 <Button type="primary" htmlType="submit">保存</Button>
               </Form.Item>
@@ -322,7 +340,7 @@ class CallStrategy extends Component {
             {subStrategyList && <StrategyEditor subStrategyList={subStrategyList} AllJudgeTypeList={AllJudgeTypeList} />}
           </DragDropContext>
         </div>
-        <ForbidCallStrategy ref={this.forbidCallRef} initialValues={initialValues} callStrategy={this} />
+        <ForbidCallStrategy ref={this.forbidCallRef} initialValues={ForbidInitialValues} callStrategy={this} />
       </div>
     )
   }

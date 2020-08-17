@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import { setCookie } from '@/utils/cookie'
+import { getParameter } from '@/utils/tools'
 import CallStrategy from './components/CallStrategy'
 
 class Home extends Component {
@@ -10,7 +11,14 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    setCookie('SHAREJSESSIONID', 'cb7344b0-0fea-405b-aef1-5c9184678821')
+    console.log('window', window.location.href, getParameter('SHAREJSESSIONID'))
+    const Id = getParameter('SHAREJSESSIONID')
+    if (Id) {
+      setCookie('SHAREJSESSIONID', Id)
+    } else {
+      setCookie('SHAREJSESSIONID', '7d07b3b4-da00-4a62-b524-30565c71faf0')
+    }
+
     setCookie('copyFlag', 'true')
     setCookie('lxcs_ck_user_departmentcd', '')
     setCookie('lxcs_ck_user_departmenttopcd', '')

@@ -39,7 +39,7 @@ class ForbidCallStrategy extends Component {
     params.caseType = params.caseType.join(',');
     params.status = params.status.join(',');
     callStrategy.setState({
-      initialValues: params
+      ForbidInitialValues: params
     })
 
     this.handleCancel()
