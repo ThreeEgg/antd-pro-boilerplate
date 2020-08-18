@@ -23,7 +23,7 @@ export const addSubStrategy = params => {
 }
 
 export const updateSubStrategy = params => {
-  return axios.put(`${api.updateSubStrategy}`, params)
+  return axios.post(`${api.updateSubStrategy}`, params)
 }
 
 export const deleteSubStrategy = params => {

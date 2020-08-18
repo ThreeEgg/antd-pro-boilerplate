@@ -1,6 +1,6 @@
-import { Button, Tag, Form, Modal, Input, message } from 'antd'
+import { Button, Tag, Form, Modal, Input, message, Tooltip } from 'antd'
 import classNames from 'classnames';
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import * as strategyServices from '@/services/strategy'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -12,7 +12,10 @@ class SubStrategy extends Component {
 
   state = {
     addStrategyRuleVisible: false,
+    subStrategyItem: {},
   }
+
+  judgeTypeGatherRefs = {}
 
   makeList = (el) => {
     this.props.connector.addList(el);
@@ -59,9 +62,25 @@ class SubStrategy extends Component {
     this.props.addSubStrategyShow()
   }
 
-  updateSubStrategy = async () => {
+  setSubStrategyItem = (subStrategyItem, flag) => {
+    this.setState({
+      subStrategyItem,
+    }, () => {
+      const success = this.updateSubStrategy()
+      if (success && flag === 1) {
+        message.success('删除成功')
+      }
+    })
+  }
+
+  updateSubStrategy = async (flag) => {
     const { subStrategyItem } = this.state;
-    console.log('subStrategyItem', subStrategyItem)
+    console.log('subStrategyItem', subStrategyItem, this.judgeTypeGatherRefs)
+    /* for(let key in this.judgeTypeGatherRefs){
+      subStrategyItem.strategyRuleList.forEach(item => {
+        if(item.ruleId)
+      })
+    } */
     const params = {
       id: subStrategyItem.id,
       name: subStrategyItem.name,
@@ -69,7 +88,13 @@ class SubStrategy extends Component {
       strategyRuleList: subStrategyItem.strategyRuleList,
     }
     const { success } = await strategyServices.updateSubStrategy(params);
-
+    if (success) {
+      if (flag === 0) {
+        message.success('保存成功')
+      }
+      this.handleCancel()
+      return success;
+    }
   }
 
   handleCancel = () => {
@@ -88,18 +113,22 @@ class SubStrategy extends Component {
     console.log('params', params)
     const { subStrategyItem } = this.state;
     subStrategyItem.strategyRuleList.push({
-      strategyRuleList: [],
-      callTimeLimit: 1,
-      remindUser: true,
-      progressHidden: true,
-      followInterval: 1,
-      followIntervalType: 1,
+      judgeTypeList: [],
+      callTimeLimit: 999,
+      remindUser: false,
+      progressHidden: false,
+      followInterval: 12,
+      followIntervalType: 2,
       nextSubStrategyId: '',
+      ...params,
     })
     this.setState({
       subStrategyItem
     }, () => {
-      this.updateSubStrategy()
+      const success = this.updateSubStrategy()
+      if (success) {
+        message.success('新增成功')
+      }
     })
   }
 
@@ -113,7 +142,6 @@ class SubStrategy extends Component {
         that.deleteSubStrategy()
       },
       onCancel() {
-        console.log('Cancel');
       },
     });
   }
@@ -128,9 +156,15 @@ class SubStrategy extends Component {
   }
 
   render() {
-    const { propsId, subStrategyItem, AllJudgeTypeList = [], sourceClassName, targetClassName, sourceSetClassName } = this.props;
+    const { propsId, AllJudgeTypeList = [], sourceClassName, targetClassName, sourceSetClassName } = this.props;
+    const { addStrategyRuleVisible, subStrategyItem } = this.state;
     const { strategyRuleList = [] } = subStrategyItem;
-    const { addStrategyRuleVisible } = this.state
+    let isLong = false
+    if (subStrategyItem.name && subStrategyItem.name.length > 5) {
+      subStrategyItem.abbName = subStrategyItem.name.substring(0, 5)
+      subStrategyItem.abbName += '...'
+      isLong = true;
+    }
     return (
       <Droppable droppableId={subStrategyItem.id}>
         {(provided, snapshot) => (
@@ -144,10 +178,14 @@ class SubStrategy extends Component {
             <div className={styles.titleBox}>
               <div className="title">
                 <span>子拨打策略1：</span>
-                <span>{subStrategyItem.name || '暂未命名'}</span>
+                <Tooltip
+                  title={subStrategyItem.name}
+                >
+                  <span>{isLong ? subStrategyItem.abbName : (subStrategyItem.name || '暂未命名')}</span>
+                </Tooltip>
               </div>
               <div className="btnBox">
-                <Button type="primary" size="small" onClick={this.updateSubStrategy}>保存</Button>
+                <Button type="primary" size="small" onClick={() => this.updateSubStrategy(0)}>保存</Button>
                 <Button type="primary" size="small" onClick={this.addSubStrategyShow}>新增</Button>
                 <Button danger size="small" onClick={this.deleteSubStrategyConfirm}>删除</Button>
                 <Button type="primary" size="small">收起</Button>
@@ -157,7 +195,7 @@ class SubStrategy extends Component {
               <span>判断类型</span>
               <div className={styles.judgeTypeBox}>
                 {
-                  subStrategyItem.unusedJudgeTypeList.map((item, index) => {
+                  subStrategyItem.unusedJudgeTypeList && subStrategyItem.unusedJudgeTypeList.map((item, index) => {
                     return (
                       <Draggable
                         draggableId={item}
@@ -189,9 +227,22 @@ class SubStrategy extends Component {
             <div className={classNames(styles.judgeTypeGatherBox, sourceSetClassName)}>
               {
                 strategyRuleList.length > 0 && strategyRuleList.map((strategyRuleItem, index) => {
+                  let ref = this.judgeTypeGatherRefs[`${strategyRuleItem.ruleId}`];
+                  if (!ref) {
+                    this.judgeTypeGatherRefs[strategyRuleItem.ruleId] = createRef();
+                    ref = this.judgeTypeGatherRefs[strategyRuleItem.ruleId];
+                  }
                   return (
-                    <JudgeTypeGather strategyRuleItem={strategyRuleItem} key={strategyRuleItem.ruleId}
-                      propsIndex={index} AllJudgeTypeList={AllJudgeTypeList} />
+                    <JudgeTypeGather
+                      ref={ref}
+                      strategyRuleItem={strategyRuleItem}
+                      subStrategyItem={subStrategyItem}
+                      key={strategyRuleItem.ruleId}
+                      propsIndex={index}
+                      AllJudgeTypeList={AllJudgeTypeList}
+                      setSubStrategyItem={this.setSubStrategyItem}
+                      updateSubStrategy={this.updateSubStrategy}
+                    />
                   )
                 })
               }

@@ -142,14 +142,14 @@ class ForbidCallStrategy extends Component {
                 </Form.Item>
                 <Form.Item label="案件停催" name="caseStopCall">
                   <Radio.Group>
-                    <Radio value={1}>是</Radio>
-                    <Radio value={0}>否</Radio>
+                    <Radio value="1">是</Radio>
+                    <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item label="减免账户" name="remissionAccount">
                   <Radio.Group>
-                    <Radio value={1}>是</Radio>
-                    <Radio value={0}>否</Radio>
+                    <Radio value="1">是</Radio>
+                    <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item label="案件状态" name="status">
@@ -178,26 +178,26 @@ class ForbidCallStrategy extends Component {
                 </Form.Item>
                 <Form.Item label="已删除电话" name="deletedPhone">
                   <Radio.Group>
-                    <Radio value={1}>是</Radio>
-                    <Radio value={0}>否</Radio>
+                    <Radio value="1">是</Radio>
+                    <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item label="隐藏电话" name="delFlag">
                   <Radio.Group>
-                    <Radio value={1}>是</Radio>
-                    <Radio value={0}>否</Radio>
+                    <Radio value="1">是</Radio>
+                    <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item label="禁止小Go拨打" name="notXiaoGo">
                   <Radio.Group>
-                    <Radio value={1}>是</Radio>
-                    <Radio value={0}>否</Radio>
+                    <Radio value="1">是</Radio>
+                    <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item label="任务暂停大于7天" name="taskPauseGreatSevenDay">
                   <Radio.Group>
-                    <Radio value={1}>是</Radio>
-                    <Radio value={0}>否</Radio>
+                    <Radio value="1">是</Radio>
+                    <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
                 <div className="title">
@@ -211,21 +211,21 @@ class ForbidCallStrategy extends Component {
                 </Form.Item>
                 <Form.Item label="每日截至拨打时间" name="dayStopCallTime">
                   <TimePicker
-                    // defaultValue={moment('12:00', 'HH:mm')}
+                    defaultValue={moment('20:00', 'HH:mm')}
                     format="HH:mm"
                     allowClear={false}
                   />
                 </Form.Item>
                 <Form.Item label="周末不拨打" name="weekendStop">
                   <Radio.Group>
-                    <Radio value={1}>是</Radio>
-                    <Radio value={0}>否</Radio>
+                    <Radio value="1">是</Radio>
+                    <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item label="节假日不拨打" name="holidayStop">
                   <Radio.Group>
-                    <Radio value={1}>是</Radio>
-                    <Radio value={0}>否</Radio>
+                    <Radio value="1">是</Radio>
+                    <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
               </Col>

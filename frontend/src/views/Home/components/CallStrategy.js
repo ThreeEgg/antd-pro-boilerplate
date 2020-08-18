@@ -25,19 +25,19 @@ class CallStrategy extends Component {
       waitDivideMoneyOperator: '<=',
       waitDivideMoneyPercent: 100,
       caseType: ['B', 'C'],
-      caseStopCall: 1,
-      remissionAccount: 1,
+      caseStopCall: '1',
+      remissionAccount: '1',
       status: ['Stop'],
-      deletedPhone: 1,
-      delFlag: 1,
-      notXiaoGo: 1,
-      taskPauseGreatSevenDay: 1,
+      deletedPhone: '1',
+      delFlag: '1',
+      notXiaoGo: '1',
+      taskPauseGreatSevenDay: '1',
 
       taskDayCallLimit: 2,
       phoneDayCallLimit: 3,
       dayStopCallTime: moment('20:00', 'HH:mm'),
-      weekendStop: 0,
-      holidayStop: 0,
+      weekendStop: '0',
+      holidayStop: '0',
     },
     routeList: [],
     strategyId: getParameter('strategyId'),
@@ -129,13 +129,16 @@ class CallStrategy extends Component {
   }
 
   goToForbidStrategy = () => {
-    const { strategy: { stopCallTask } } = this.state;
-    const ForbidInitialValues = stopCallTask;
-    ForbidInitialValues.caseType = typeof (ForbidInitialValues.caseType) === 'string' ? ForbidInitialValues.caseType.split(',') : ForbidInitialValues.caseType;
-    ForbidInitialValues.status = typeof (ForbidInitialValues.status) === 'string' ? ForbidInitialValues.status.split(',') : ForbidInitialValues.status;
-    this.setState({
-      ForbidInitialValues
-    })
+    const { strategy: { stopCallTask }, strategyId } = this.state;
+    if (strategyId) {
+      const ForbidInitialValues = stopCallTask;
+      ForbidInitialValues.caseType = typeof (ForbidInitialValues.caseType) === 'string' ? ForbidInitialValues.caseType.split(',') : ForbidInitialValues.caseType;
+      ForbidInitialValues.status = typeof (ForbidInitialValues.status) === 'string' ? ForbidInitialValues.status.split(',') : ForbidInitialValues.status;
+      this.setState({
+        ForbidInitialValues
+      })
+
+    }
     this.forbidCallRef.current.handleOk()
   }
 

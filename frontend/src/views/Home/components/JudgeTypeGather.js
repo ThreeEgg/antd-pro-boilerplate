@@ -39,6 +39,13 @@ class JudgeTypeGather extends Component {
     }
   }
 
+  deleteJudgeTypeGather = (strategyRuleItem) => {
+    const { subStrategyItem, setSubStrategyItem } = this.props;
+    console.log('subStrategyItem', subStrategyItem, strategyRuleItem)
+    subStrategyItem.strategyRuleList = subStrategyItem.strategyRuleList.filter((item) => item.ruleId !== strategyRuleItem.ruleId)
+    setSubStrategyItem(subStrategyItem, 1)
+  }
+
   render() {
     const { callTimeLimit, remindUser, progressHidden, followInterval, followIntervalType, } = this.state;
     const { strategyRuleItem, propsIndex, AllJudgeTypeList = [] } = this.props;
@@ -51,12 +58,12 @@ class JudgeTypeGather extends Component {
             <span>{strategyRuleItem.ruleName}</span>
           </div>
           <div className="btnBox">
-            <Button danger size="small" type="link">删除</Button>
+            <Button danger size="small" type="link" onClick={() => this.deleteJudgeTypeGather(strategyRuleItem)}>删除</Button>
           </div>
         </div>
         <div className={styles.judgeBox}>
           {
-            judgeTypeList.length > 0 && judgeTypeList.map(item => {
+            judgeTypeList && judgeTypeList.length > 0 && judgeTypeList.map(item => {
               return (
                 <Tag color="rgb(22,155,213)" key={item}>{
                   AllJudgeTypeList.find(demo => demo.nameCd === item) && AllJudgeTypeList.find(demo => demo.nameCd === item).name
