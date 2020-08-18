@@ -20,6 +20,10 @@ class StrategyEditor extends Component {
   // 列表元素类名
   sourceSetClassName = 'source-set';
 
+  componentDidMount() {
+    this.initConnector();
+  }
+
   initConnector = () => {
     const connectorInstance = window.jsPlumb.newInstance({
       connector: ['Flowchart', { midpoint: 0.1, cornerRadius: 4 }],
@@ -101,9 +105,7 @@ class StrategyEditor extends Component {
     }
   }
 
-  componentDidMount() {
-    this.initConnector();
-  }
+
 
   render() {
     const { sourceClassName, targetClassName, sourceSetClassName, addSubStrategyShow } = this;

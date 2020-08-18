@@ -8,6 +8,7 @@ import JudgeTypeGather from './JudgeTypeGather'
 import styles from './SubStrategy.less';
 
 const { confirm } = Modal;
+const { Search } = Input;
 
 class SubStrategy extends Component {
 
@@ -15,9 +16,23 @@ class SubStrategy extends Component {
     addStrategyRuleVisible: false,
     subStrategyItem: {},
     collapsed: false,
+    nameEdit: false,
   }
 
   judgeTypeGatherRefs = {}
+
+  componentDidMount() {
+    this.setState({
+      subStrategyItem: this.props.subStrategyItem
+    });
+
+    if (this.props.connector) {
+      const { sourceClassName, targetClassName, sourceSetClassName, propsId } = this.props;
+      const container = document.getElementById(propsId);
+      Array.from(container.querySelectorAll(`.${sourceSetClassName}`)).forEach(this.makeList);
+      Array.from(container.querySelectorAll(`.${targetClassName}`)).forEach(this.makeTarget);
+    }
+  }
 
   makeList = (el) => {
     this.props.connector.addList(el);
@@ -35,18 +50,7 @@ class SubStrategy extends Component {
     return this.props.connector.connections;
   };
 
-  componentDidMount() {
-    this.setState({
-      subStrategyItem: this.props.subStrategyItem
-    });
 
-    if (this.props.connector) {
-      const { sourceClassName, targetClassName, sourceSetClassName, propsId } = this.props;
-      const container = document.getElementById(propsId);
-      Array.from(container.querySelectorAll(`.${sourceSetClassName}`)).forEach(this.makeList);
-      Array.from(container.querySelectorAll(`.${targetClassName}`)).forEach(this.makeTarget);
-    }
-  }
 
   addSubStrategyShow = () => {
     this.props.addSubStrategyShow()
@@ -57,20 +61,31 @@ class SubStrategy extends Component {
       subStrategyItem,
     }, () => {
       const success = this.updateSubStrategy()
-      if (success && flag === 1) {
-        message.success('删除成功')
+      if (success) {
+        if (flag === 1) {
+          message.success('删除成功')
+        } else if (flag === 2) {
+          message.success('修改成功')
+        }
       }
     })
   }
 
   updateSubStrategy = async (flag) => {
     const { subStrategyItem } = this.state;
-    console.log('subStrategyItem', subStrategyItem, this.judgeTypeGatherRefs)
-    /* for(let key in this.judgeTypeGatherRefs){
+
+
+    Object.keys(this.judgeTypeGatherRefs).forEach(key => {
       subStrategyItem.strategyRuleList.forEach(item => {
-        if(item.ruleId)
+        if (item.ruleId === key) {
+          item.callTimeLimit = this.judgeTypeGatherRefs[key].current.state.callTimeLimit;
+          item.remindUser = this.judgeTypeGatherRefs[key].current.state.remindUser;
+          item.progressHidden = this.judgeTypeGatherRefs[key].current.state.progressHidden;
+          item.followInterval = this.judgeTypeGatherRefs[key].current.state.followInterval;
+          item.followIntervalType = this.judgeTypeGatherRefs[key].current.state.followIntervalType;
+        }
       })
-    } */
+    })
     const params = {
       id: subStrategyItem.id,
       name: subStrategyItem.name,
@@ -120,7 +135,6 @@ class SubStrategy extends Component {
   }
 
   onFinish = params => {
-    console.log('params', params)
     const { subStrategyItem } = this.state;
     subStrategyItem.strategyRuleList.push({
       judgeTypeList: [],
@@ -166,14 +180,30 @@ class SubStrategy extends Component {
   }
 
   toggleCollapse = () => {
+    this.setState((prevState) => ({ collapsed: !prevState.collapsed }))
+  }
+
+  editSubStrategyName = () => {
+    this.setState({ nameEdit: true })
+  }
+
+  updateSubStrategyName = value => {
+    const { subStrategyItem } = this.state
+    subStrategyItem.name = value
     this.setState({
-      collapsed: !this.state.collapsed,
-    });
+      subStrategyItem
+    }, () => {
+      const success = this.updateSubStrategy()
+      if (success) {
+        message.success('修改成功')
+        this.setState({ nameEdit: false })
+      }
+    })
   }
 
   render() {
     const { propsId, AllJudgeTypeList = [], sourceClassName, targetClassName, sourceSetClassName, connector } = this.props;
-    const { addStrategyRuleVisible, subStrategyItem, collapsed } = this.state;
+    const { addStrategyRuleVisible, subStrategyItem, collapsed, nameEdit } = this.state;
     const { strategyRuleList = [] } = subStrategyItem;
     let isLong = false
     if (subStrategyItem.name && subStrategyItem.name.length > 5) {
@@ -189,18 +219,23 @@ class SubStrategy extends Component {
             {...provided.droppableProps}
             // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
             ref={provided.innerRef}
+            isDraggingOver={snapshot.isDraggingOver}
           >
             <div className={classNames(styles.connectorHandler, targetClassName)}
               data-id={subStrategyItem.id}
             />
             <div className={styles.titleBox}>
-              <div className="title">
+              <div className="title" onDoubleClick={this.editSubStrategyName}>
                 <span>子拨打策略1：</span>
-                <Tooltip
-                  title={subStrategyItem.name}
-                >
-                  <span>{isLong ? subStrategyItem.abbName : (subStrategyItem.name || '暂未命名')}</span>
-                </Tooltip>
+                {
+                  nameEdit ? <Search defaultValue={subStrategyItem.name} enterButton="确认" onSearch={value => this.updateSubStrategyName(value)} /> :
+                    <Tooltip
+                      title={subStrategyItem.name}
+                    >
+                      <span>{isLong ? subStrategyItem.abbName : (subStrategyItem.name || '暂未命名')}</span>
+                    </Tooltip>
+                }
+
               </div>
               <div className="btnBox">
                 <Button type="primary" size="small" onClick={() => this.updateSubStrategy(0)}>保存</Button>
@@ -216,9 +251,9 @@ class SubStrategy extends Component {
                   subStrategyItem.unusedJudgeTypeList && subStrategyItem.unusedJudgeTypeList.map((item, index) => {
                     return (
                       <Draggable
-                        draggableId={item}
+                        draggableId={`${subStrategyItem.id}-${item}`}
                         index={index}
-                        key={item}
+                        key={`${subStrategyItem.id}-${item}`}
                       >
                         {
                           (provided1, snapshot1) => (

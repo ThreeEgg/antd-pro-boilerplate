@@ -197,7 +197,12 @@ class CallStrategy extends Component {
   }
 
   onDragEnd = result => {
+    console.log('result', result)
+    const { destination, source, draggableId } = result
 
+    if (!destination) {
+      return
+    }
     return result;
   }
 

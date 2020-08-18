@@ -1,9 +1,12 @@
-import { Button, Input, InputNumber, Radio, Select, Tag, } from 'antd'
+import { Button, Input, InputNumber, Radio, Select, Tag, Modal } from 'antd'
 import classNames from 'classnames'
 import React, { Component, createRef } from 'react'
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import styles from './JudgeTypeGather.less'
 
 const { Option } = Select
+const { confirm } = Modal;
+const { Search } = Input;
 
 class JudgeTypeGather extends Component {
   state = {
@@ -12,6 +15,7 @@ class JudgeTypeGather extends Component {
     progressHidden: null,
     followInterval: null,
     followIntervalType: null,
+    editName: false,
   }
 
   container = createRef();
@@ -20,20 +24,7 @@ class JudgeTypeGather extends Component {
 
   sourceElement = createRef();
 
-  makeSource = (el) => {
-    this.props.connector.makeSource(el, {
-      allowLoopback: false,
-      anchor: ["Left", "Right"],
-      maxConnections: 1,
-    });
-  }
 
-  initConnection = (targetElement) => {
-    this.props.connector.connect({
-      source: this.sourceElement.current,
-      target: targetElement,
-    });
-  }
 
   componentDidMount() {
     const { strategyRuleItem } = this.props
@@ -51,7 +42,6 @@ class JudgeTypeGather extends Component {
       setTimeout(() => {
         // 在宏循环后初始化连接
         Array.from(document.querySelectorAll(`.${this.props.targetClassName}`)).find(item => {
-          console.log('item', item.dataset.id, strategyRuleItem.nextSubStrategyId);
           if (item.dataset.id === strategyRuleItem.nextSubStrategyId) {
             this.initConnection(item);
           }
@@ -78,23 +68,79 @@ class JudgeTypeGather extends Component {
     }
   }
 
+  makeSource = (el) => {
+    this.props.connector.makeSource(el, {
+      allowLoopback: false,
+      anchor: ["Left", "Right"],
+      maxConnections: 1,
+    });
+  }
+
+  initConnection = (targetElement) => {
+    this.props.connector.connect({
+      source: this.sourceElement.current,
+      target: targetElement,
+    });
+  }
+
   deleteJudgeTypeGather = (strategyRuleItem) => {
+
     const { subStrategyItem, setSubStrategyItem } = this.props;
-    console.log('subStrategyItem', subStrategyItem, strategyRuleItem)
     subStrategyItem.strategyRuleList = subStrategyItem.strategyRuleList.filter((item) => item.ruleId !== strategyRuleItem.ruleId)
-    setSubStrategyItem(subStrategyItem, 1)
+
+    confirm({
+      title: '确认删除吗',
+      icon: <ExclamationCircleOutlined />,
+      content: '确认',
+      onOk() {
+        setSubStrategyItem(subStrategyItem, 1)
+      },
+      onCancel() {
+      },
+    });
+
+  }
+
+  editJudgeTypeGather = () => {
+    this.setState({
+      editName: true,
+    })
+  }
+
+  updateStrategyRuleName = (value, strategyRuleItem) => {
+    const { subStrategyItem, setSubStrategyItem } = this.props;
+    subStrategyItem.strategyRuleList.forEach(item => {
+      if (item.ruleId === strategyRuleItem.ruleId) {
+        item.ruleName = value
+      }
+    })
+    setSubStrategyItem(subStrategyItem, 2)
+    this.setState({
+      editName: false,
+    })
   }
 
   render() {
-    const { callTimeLimit, remindUser, progressHidden, followInterval, followIntervalType, } = this.state;
+    const { callTimeLimit, remindUser, progressHidden, followInterval, followIntervalType, editName } = this.state;
     const { strategyRuleItem, propsIndex, AllJudgeTypeList = [], sourceClassName, collapsed } = this.props;
     const { judgeTypeList = [] } = strategyRuleItem
     return (
       <div className={classNames(styles.JudgeTypeGather, { [styles.collapsed]: collapsed })} ref={this.container}>
         <div className={styles.gatherTitleBox}>
-          <div className="title">
+          <div className="title" onDoubleClick={this.editJudgeTypeGather}>
             <span>判断类型集{propsIndex + 1}：</span>
-            <span>{strategyRuleItem.ruleName}</span>
+            {
+              editName ?
+                <Search
+                  defaultValue={strategyRuleItem.ruleName}
+                  enterButton="确认"
+                  onSearch={value => this.updateStrategyRuleName(value, strategyRuleItem)}
+                  size="small"
+                />
+                :
+                <span>{strategyRuleItem.ruleName}</span>
+            }
+
           </div>
           <div className="btnBox">
             <Button danger size="small" type="link" onClick={() => this.deleteJudgeTypeGather(strategyRuleItem)}>删除</Button>

@@ -11,7 +11,6 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    console.log('window', window.location.href, getParameter('SHAREJSESSIONID'))
     const Id = getParameter('SHAREJSESSIONID')
     if (Id) {
       setCookie('SHAREJSESSIONID', Id)
