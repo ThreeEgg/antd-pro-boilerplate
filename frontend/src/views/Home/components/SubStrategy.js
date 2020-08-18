@@ -1,4 +1,4 @@
-import * as strategyServices from '@/services/strategy'
+import * as strategyServices from '@/services/strategy';
 import {ExclamationCircleOutlined} from '@ant-design/icons';
 import {Button, Form, Input, message, Modal, Tag} from 'antd'
 import classNames from 'classnames';
@@ -27,11 +27,12 @@ class SubStrategy extends Component {
     });
   }
 
+  // 获取当前所有的连接
+  getConnections = () => {
+    return this.props.connector.connections;
+  };
+
   componentDidMount() {
-    console.log(this.props.subStrategyItem.strategyRuleList);
-
-    console.log(this.props.connector)
-
     this.setState({
       subStrategyItem: this.props.subStrategyItem
     });
@@ -56,9 +57,31 @@ class SubStrategy extends Component {
       name: subStrategyItem.name,
       strategyId: subStrategyItem.strategyId,
       strategyRuleList: subStrategyItem.strategyRuleList,
-    }
+    };
+
+    // 遍历每个判断类型集，更新连接情况
+    const connections = this.getConnections();
+    subStrategyItem.strategyRuleList.forEach(strategyRule => {
+      const {ruleId} = strategyRule;
+      // 先重置状态，重新遍历
+      strategyRule.nextSubStrategyId = null;
+      connections.find(connection => {
+        const {source, target} = connection;
+        const sourceId = source.dataset.id;
+        const targetId = target.dataset.id;
+        if (sourceId === ruleId) {
+          strategyRule.nextSubStrategyId = targetId;
+          return true;
+        }
+        return false;
+      });
+    });
+
     const {success} = await strategyServices.updateSubStrategy(params);
 
+    if (success) {
+      message.success('保存成功');
+    }
   }
 
   handleCancel = () => {
@@ -135,7 +158,9 @@ class SubStrategy extends Component {
             // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
                ref={provided.innerRef}
           >
-            <div className={classNames(styles.connectorHandler, targetClassName)}/>
+            <div className={classNames(styles.connectorHandler, targetClassName)}
+                 data-id={subStrategyItem.id}
+            />
             <div className={styles.titleBox}>
               <div className="title">
                 <span>子拨打策略1：</span>
@@ -189,6 +214,7 @@ class SubStrategy extends Component {
                       key={strategyRuleItem.ruleId}
                       connector={connector}
                       sourceClassName={sourceClassName}
+                      targetClassName={targetClassName}
                       propsIndex={index}
                       strategyRuleItem={strategyRuleItem}
                       AllJudgeTypeList={AllJudgeTypeList}

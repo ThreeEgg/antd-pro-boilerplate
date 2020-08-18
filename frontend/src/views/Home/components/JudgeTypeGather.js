@@ -16,11 +16,20 @@ class JudgeTypeGather extends Component {
 
   container = createRef();
   content = createRef();
+  sourceElement = createRef();
 
   makeSource = (el) => {
     this.props.connector.makeSource(el, {
       allowLoopback: false,
-      anchor: ["Left", "Right"]
+      anchor: ["Left", "Right"],
+      maxConnections: 1,
+    });
+  }
+
+  initConnection = (targetElement) => {
+    this.props.connector.connect({
+      source: this.sourceElement.current,
+      target: targetElement,
     });
   }
 
@@ -37,10 +46,19 @@ class JudgeTypeGather extends Component {
     if (this.props.connector) {
       const container = this.container.current;
       Array.from(container.querySelectorAll('.' + this.props.sourceClassName)).forEach(this.makeSource);
+      setTimeout(() => {
+        // 在宏循环后初始化连接
+        Array.from(document.querySelectorAll('.' + this.props.targetClassName)).find(item => {
+          if (item.dataset.id === strategyRuleItem.nextSubStrategyId) {
+            this.initConnection(item);
+          }
+        });
+      });
     }
 
-    var height = this.content.current.scrollHeight
+    const height = this.content.current.scrollHeight;
     this.content.current.style.setProperty('--max-height', height + 'px')
+
   }
 
   componentDidUpdate(prevProps) {
@@ -70,7 +88,9 @@ class JudgeTypeGather extends Component {
           </div>
           <div className="btnBox">
             <Button danger size="small" type="link">删除</Button>
-            <span className={classNames(styles.dot, sourceClassName)}/>
+            <span ref={this.sourceElement} className={classNames(styles.dot, sourceClassName)}
+                  data-id={strategyRuleItem.ruleId}
+            />
           </div>
         </div>
         <div className={styles.content} ref={this.content}>

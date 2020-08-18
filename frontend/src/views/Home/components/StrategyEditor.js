@@ -7,8 +7,6 @@ import styles from './StrategyEditor.less';
 import SubStrategy from './SubStrategy';
 
 class StrategyEditor extends Component {
-
-
   state = {
     clientHeight: document.documentElement.clientHeight,
     subStrategyVisible: false,
@@ -19,11 +17,8 @@ class StrategyEditor extends Component {
 
   targetClassName = 'target';
 
+  // 列表元素类名
   sourceSetClassName = 'source-set';
-
-  componentDidMount() {
-    this.initConnector();
-  }
 
   initConnector = () => {
     const connectorInstance = window.jsPlumb.newInstance({
@@ -45,21 +40,17 @@ class StrategyEditor extends Component {
       console.log('connection', c);
     });
 
-
     // 更新
     connectorInstance.bind("connectionMoved", function (c) {
-
       console.log('connectionMoved', c);
     });
 
     // 连线删除
     connectorInstance.bind("beforeDetach", function (c) {
-
       return true;
     });
 
     connectorInstance.bind("dblclick", function (c) {
-      console.log('dblclick', c);
       connectorInstance.deleteConnection(c);
     });
 
@@ -68,7 +59,7 @@ class StrategyEditor extends Component {
     this.setState({
       connectorInstance,
     });
-  }
+  };
 
   addSubStrategyShow = () => {
     this.setState({
@@ -108,6 +99,10 @@ class StrategyEditor extends Component {
       getStrategyDetail();
       this.handleCancel()
     }
+  }
+
+  componentDidMount() {
+    this.initConnector();
   }
 
   render() {
