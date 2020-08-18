@@ -8,24 +8,19 @@ import JudgeTypeGather from './JudgeTypeGather'
 import styles from './SubStrategy.less';
 
 const { confirm } = Modal;
+
 class SubStrategy extends Component {
 
   state = {
     addStrategyRuleVisible: false,
     subStrategyItem: {},
+    collapsed: false,
   }
 
   judgeTypeGatherRefs = {}
 
   makeList = (el) => {
     this.props.connector.addList(el);
-  }
-
-  makeSource = (el) => {
-    this.props.connector.makeSource(el, {
-      allowLoopback: false,
-      anchor: ["Left", "Right"]
-    });
   }
 
   makeTarget = (el) => {
@@ -35,26 +30,21 @@ class SubStrategy extends Component {
     });
   }
 
+  // 获取当前所有的连接
+  getConnections = () => {
+    return this.props.connector.connections;
+  };
+
   componentDidMount() {
-    console.log(this.props.subStrategyItem.strategyRuleList);
-
-    console.log(this.props.connector)
-
     this.setState({
       subStrategyItem: this.props.subStrategyItem
-    })
-  }
+    });
 
-  componentDidUpdate = (prevProps) => {
-    if (!prevProps.connector) {
-      if (prevProps.connector !== this.props.connector) {
-        const { sourceClassName, targetClassName, sourceSetClassName, propsId } = this.props;
-        const container = document.getElementById(propsId);
-        console.log(Array.from(container.querySelectorAll(sourceSetClassName)))
-        Array.from(container.querySelectorAll(sourceSetClassName)).forEach(this.makeList);
-        Array.from(container.querySelectorAll(sourceClassName)).forEach(this.makeSource);
-        Array.from(container.querySelectorAll(targetClassName)).forEach(this.makeTarget);
-      }
+    if (this.props.connector) {
+      const { sourceClassName, targetClassName, sourceSetClassName, propsId } = this.props;
+      const container = document.getElementById(propsId);
+      Array.from(container.querySelectorAll(`.${sourceSetClassName}`)).forEach(this.makeList);
+      Array.from(container.querySelectorAll(`.${targetClassName}`)).forEach(this.makeTarget);
     }
   }
 
@@ -86,8 +76,28 @@ class SubStrategy extends Component {
       name: subStrategyItem.name,
       strategyId: subStrategyItem.strategyId,
       strategyRuleList: subStrategyItem.strategyRuleList,
-    }
+    };
+
+    // 遍历每个判断类型集，更新连接情况
+    const connections = this.getConnections();
+    subStrategyItem.strategyRuleList.forEach(strategyRule => {
+      const { ruleId } = strategyRule;
+      // 先重置状态，重新遍历
+      strategyRule.nextSubStrategyId = null;
+      connections.find(connection => {
+        const { source, target } = connection;
+        const sourceId = source.dataset.id;
+        const targetId = target.dataset.id;
+        if (sourceId === ruleId) {
+          strategyRule.nextSubStrategyId = targetId;
+          return true;
+        }
+        return false;
+      });
+    });
+
     const { success } = await strategyServices.updateSubStrategy(params);
+
     if (success) {
       if (flag === 0) {
         message.success('保存成功')
@@ -155,9 +165,15 @@ class SubStrategy extends Component {
     }
   }
 
+  toggleCollapse = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
+
   render() {
-    const { propsId, AllJudgeTypeList = [], sourceClassName, targetClassName, sourceSetClassName } = this.props;
-    const { addStrategyRuleVisible, subStrategyItem } = this.state;
+    const { propsId, AllJudgeTypeList = [], sourceClassName, targetClassName, sourceSetClassName, connector } = this.props;
+    const { addStrategyRuleVisible, subStrategyItem, collapsed } = this.state;
     const { strategyRuleList = [] } = subStrategyItem;
     let isLong = false
     if (subStrategyItem.name && subStrategyItem.name.length > 5) {
@@ -174,7 +190,9 @@ class SubStrategy extends Component {
             // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
             ref={provided.innerRef}
           >
-            <div className={classNames(styles.connectorHandler, targetClassName)} />
+            <div className={classNames(styles.connectorHandler, targetClassName)}
+              data-id={subStrategyItem.id}
+            />
             <div className={styles.titleBox}>
               <div className="title">
                 <span>子拨打策略1：</span>
@@ -188,7 +206,7 @@ class SubStrategy extends Component {
                 <Button type="primary" size="small" onClick={() => this.updateSubStrategy(0)}>保存</Button>
                 <Button type="primary" size="small" onClick={this.addSubStrategyShow}>新增</Button>
                 <Button danger size="small" onClick={this.deleteSubStrategyConfirm}>删除</Button>
-                <Button type="primary" size="small">收起</Button>
+                <Button type="primary" size="small" onClick={this.toggleCollapse}>{collapsed ? '展开' : '收起'}</Button>
               </div>
             </div>
             <div className={styles.judgeType}>
@@ -238,10 +256,14 @@ class SubStrategy extends Component {
                       strategyRuleItem={strategyRuleItem}
                       subStrategyItem={subStrategyItem}
                       key={strategyRuleItem.ruleId}
+                      connector={connector}
                       propsIndex={index}
                       AllJudgeTypeList={AllJudgeTypeList}
                       setSubStrategyItem={this.setSubStrategyItem}
                       updateSubStrategy={this.updateSubStrategy}
+                      sourceClassName={sourceClassName}
+                      targetClassName={targetClassName}
+                      collapsed={collapsed}
                     />
                   )
                 })

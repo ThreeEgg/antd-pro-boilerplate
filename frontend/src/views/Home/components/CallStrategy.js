@@ -94,6 +94,7 @@ class CallStrategy extends Component {
         firstCallInterval: result.firstCallInterval,
         comment: result.comment,
       })
+
       this.setState({
         strategy: this.handleStrategy(result),
       })

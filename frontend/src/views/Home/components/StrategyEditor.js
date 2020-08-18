@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import * as strategyServices from '@/services/strategy'
 // import * as strategyServices from '@/services/strategy'
 import { PlusCircleTwoTone } from '@ant-design/icons';
-import { Modal, Form, Input, message } from 'antd'
-import * as strategyServices from '@/services/strategy'
+import { Form, Input, message, Modal } from 'antd'
+import React, { Component } from 'react';
 import styles from './StrategyEditor.less';
 import SubStrategy from './SubStrategy';
 
 class StrategyEditor extends Component {
-
-
   state = {
     clientHeight: document.documentElement.clientHeight,
     subStrategyVisible: false,
@@ -19,18 +17,21 @@ class StrategyEditor extends Component {
 
   targetClassName = 'target';
 
+  // 列表元素类名
   sourceSetClassName = 'source-set';
-
-  componentDidMount() {
-    this.initConnector();
-  }
 
   initConnector = () => {
     const connectorInstance = window.jsPlumb.newInstance({
       connector: ['Flowchart', { midpoint: 0.1, cornerRadius: 4 }],
-      paintStyle: { strokeWidth: 2, stroke: "#ffa500" },
+      paintStyle: { strokeWidth: 3, stroke: "#008dc2" },
+      hoverPaintStyle: {
+        stroke: "#006dc2",
+      },
       endpoint: ["Dot", { radius: 8 }],
-      endpointStyle: { fill: "#ffa500" },
+      endpointStyle: { fill: "#008dc2" },
+      endpointHoverStyle: {
+        fill: "#006dc2",
+      },
       container: "editor"
     });
 
@@ -39,18 +40,26 @@ class StrategyEditor extends Component {
       console.log('connection', c);
     });
 
-    connectorInstance.bind("connection", function (c) {
-      console.log('connectionDetached', c);
-    });
-
+    // 更新
     connectorInstance.bind("connectionMoved", function (c) {
       console.log('connectionMoved', c);
     });
 
+    // 连线删除
+    connectorInstance.bind("beforeDetach", function (c) {
+      return true;
+    });
+
+    connectorInstance.bind("dblclick", function (c) {
+      connectorInstance.deleteConnection(c);
+    });
+
+    connectorInstance.addList(document.getElementById('editor'));
+
     this.setState({
       connectorInstance,
     });
-  }
+  };
 
   addSubStrategyShow = () => {
     this.setState({
@@ -92,6 +101,10 @@ class StrategyEditor extends Component {
     }
   }
 
+  componentDidMount() {
+    this.initConnector();
+  }
+
   render() {
     const { sourceClassName, targetClassName, sourceSetClassName, addSubStrategyShow } = this;
     const { clientHeight, connectorInstance, subStrategyVisible } = this.state;
@@ -99,7 +112,7 @@ class StrategyEditor extends Component {
     return (
       <div className={styles.container} style={{ height: clientHeight - 300 }} id="editor">
         {
-          subStrategyList.length > 0 ? subStrategyList.map((subStrategyItem, index) => {
+          subStrategyList.length > 0 && connectorInstance ? subStrategyList.map((subStrategyItem, index) => {
             return (
               <SubStrategy
                 connector={connectorInstance}

@@ -1,6 +1,6 @@
+import api from "@/utils/api";
 import axios from "@/utils/axios";
 import { stringify } from 'qs'
-import api from "@/utils/api";
 
 export const getStrategyDetail = params => {
   return axios.get(`${api.strategyDetail}?${stringify(params)}`)
@@ -23,7 +23,7 @@ export const addSubStrategy = params => {
 }
 
 export const updateSubStrategy = params => {
-  return axios.post(`${api.updateSubStrategy}`, params)
+  return axios.post(`${api.updateSubStrategy}`, params);
 }
 
 export const deleteSubStrategy = params => {

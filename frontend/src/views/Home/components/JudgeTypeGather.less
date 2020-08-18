@@ -2,6 +2,19 @@
   padding: 5px 0 15px 5px;
 }
 
+.collapsed {
+  .content {
+    max-height: 0;
+    opacity: 0;
+  }
+}
+
+.content {
+  transition: all 0.3s;
+  overflow: hidden;
+  max-height: var(--max-height);
+}
+
 .gatherTitleBox {
   display: flex;
   justify-content: space-between;
@@ -22,6 +35,8 @@
     }
 
     .btnBox {
+      vertical-align: middle;
+
       > .ant-btn {
         margin-left: 5px;
       }
@@ -43,6 +58,9 @@
 }
 
 .formInputGroup {
+  transition: height .3s;
+  overflow: hidden;
+
   :global {
     .formInputItem {
       display: flex;
@@ -56,3 +74,13 @@
     }
   }
 }
+
+.dot {
+  cursor: pointer;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 1px solid grey;
+  border-radius: 50%;
+}
+
