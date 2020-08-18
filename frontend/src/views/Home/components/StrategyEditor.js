@@ -63,6 +63,8 @@ class StrategyEditor extends Component {
       connectorInstance.deleteConnection(c);
     });
 
+    connectorInstance.addList(document.getElementById('editor'));
+
     this.setState({
       connectorInstance,
     });

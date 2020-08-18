@@ -13,6 +13,7 @@ class SubStrategy extends Component {
 
   state = {
     addStrategyRuleVisible: false,
+    collapsed: false,
   }
 
   makeList = (el) => {
@@ -115,10 +116,16 @@ class SubStrategy extends Component {
     }
   }
 
+  toggleCollapse = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
+
   render() {
     const {propsId, subStrategyItem, AllJudgeTypeList = [], sourceClassName, targetClassName, sourceSetClassName, connector} = this.props;
     const {strategyRuleList = []} = subStrategyItem;
-    const {addStrategyRuleVisible} = this.state
+    const {addStrategyRuleVisible, collapsed} = this.state
     return (
       <Droppable droppableId={subStrategyItem.id}>
         {(provided, snapshot) => (
@@ -138,7 +145,7 @@ class SubStrategy extends Component {
                 <Button type="primary" size="small" onClick={this.updateSubStrategy}>保存</Button>
                 <Button type="primary" size="small" onClick={this.addSubStrategyShow}>新增</Button>
                 <Button danger size="small" onClick={this.deleteSubStrategyConfirm}>删除</Button>
-                <Button type="primary" size="small">收起</Button>
+                <Button type="primary" size="small" onClick={this.toggleCollapse}>{collapsed ? '展开' : '收起'}</Button>
               </div>
             </div>
             <div className={styles.judgeType}>
@@ -185,6 +192,7 @@ class SubStrategy extends Component {
                       propsIndex={index}
                       strategyRuleItem={strategyRuleItem}
                       AllJudgeTypeList={AllJudgeTypeList}
+                      collapsed={collapsed}
                     />
                   )
                 })
