@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-// import * as strategyServices from '@/services/strategy'
-import { PlusCircleTwoTone } from '@ant-design/icons';
-import { Modal, Form, Input, message } from 'antd'
 import * as strategyServices from '@/services/strategy'
+// import * as strategyServices from '@/services/strategy'
+import {PlusCircleTwoTone} from '@ant-design/icons';
+import {Form, Input, message, Modal} from 'antd'
+import React, {Component} from 'react';
 import styles from './StrategyEditor.less';
 import SubStrategy from './SubStrategy';
 
@@ -27,10 +27,16 @@ class StrategyEditor extends Component {
 
   initConnector = () => {
     const connectorInstance = window.jsPlumb.newInstance({
-      connector: ['Flowchart', { midpoint: 0.1, cornerRadius: 4 }],
-      paintStyle: { strokeWidth: 2, stroke: "#ffa500" },
-      endpoint: ["Dot", { radius: 8 }],
-      endpointStyle: { fill: "#ffa500" },
+      connector: ['Flowchart', {midpoint: 0.1, cornerRadius: 4}],
+      paintStyle: {strokeWidth: 3, stroke: "#008dc2"},
+      hoverPaintStyle: {
+        stroke: "#006dc2",
+      },
+      endpoint: ["Dot", {radius: 8}],
+      endpointStyle: {fill: "#008dc2"},
+      endpointHoverStyle: {
+        fill: "#006dc2",
+      },
       container: "editor"
     });
 
@@ -39,12 +45,22 @@ class StrategyEditor extends Component {
       console.log('connection', c);
     });
 
-    connectorInstance.bind("connection", function (c) {
-      console.log('connectionDetached', c);
+
+    // 更新
+    connectorInstance.bind("connectionMoved", function (c) {
+
+      console.log('connectionMoved', c);
     });
 
-    connectorInstance.bind("connectionMoved", function (c) {
-      console.log('connectionMoved', c);
+    // 连线删除
+    connectorInstance.bind("beforeDetach", function (c) {
+
+      return true;
+    });
+
+    connectorInstance.bind("dblclick", function (c) {
+      console.log('dblclick', c);
+      connectorInstance.deleteConnection(c);
     });
 
     this.setState({
@@ -78,13 +94,13 @@ class StrategyEditor extends Component {
   }
 
   onFinish = async (paramsData) => {
-    const { strategyId, getStrategyDetail } = this.props
+    const {strategyId, getStrategyDetail} = this.props
     const params = {
       name: paramsData.name,
       strategyId,
       strategyRuleList: [],
     }
-    const { success, result, message: msg } = await strategyServices.addSubStrategy(params)
+    const {success, result, message: msg} = await strategyServices.addSubStrategy(params)
     if (success) {
       message.success(msg)
       getStrategyDetail();
@@ -93,30 +109,30 @@ class StrategyEditor extends Component {
   }
 
   render() {
-    const { sourceClassName, targetClassName, sourceSetClassName, addSubStrategyShow } = this;
-    const { clientHeight, connectorInstance, subStrategyVisible } = this.state;
-    const { subStrategyList = [], AllJudgeTypeList = [] } = this.props
+    const {sourceClassName, targetClassName, sourceSetClassName, addSubStrategyShow} = this;
+    const {clientHeight, connectorInstance, subStrategyVisible} = this.state;
+    const {subStrategyList = [], AllJudgeTypeList = []} = this.props
     return (
-      <div className={styles.container} style={{ height: clientHeight - 300 }} id="editor">
+      <div className={styles.container} style={{height: clientHeight - 300}} id="editor">
         {
-          subStrategyList.length > 0 ? subStrategyList.map((subStrategyItem, index) => {
-            return (
-              <SubStrategy
-                connector={connectorInstance}
-                sourceClassName={sourceClassName}
-                targetClassName={targetClassName}
-                sourceSetClassName={sourceSetClassName}
-                propsId={`list-${index + 1}`}
-                subStrategyItem={subStrategyItem}
-                key={subStrategyItem.id}
-                AllJudgeTypeList={AllJudgeTypeList}
-                addSubStrategyShow={addSubStrategyShow}
-                getStrategyDetail={this.props.getStrategyDetail}
-              />
-            )
-          }) :
+          subStrategyList.length > 0 && connectorInstance ? subStrategyList.map((subStrategyItem, index) => {
+              return (
+                <SubStrategy
+                  connector={connectorInstance}
+                  sourceClassName={sourceClassName}
+                  targetClassName={targetClassName}
+                  sourceSetClassName={sourceSetClassName}
+                  propsId={`list-${index + 1}`}
+                  subStrategyItem={subStrategyItem}
+                  key={subStrategyItem.id}
+                  AllJudgeTypeList={AllJudgeTypeList}
+                  addSubStrategyShow={addSubStrategyShow}
+                  getStrategyDetail={this.props.getStrategyDetail}
+                />
+              )
+            }) :
             <div className={styles.empty} onClick={this.addSubStrategyShow}>
-              <PlusCircleTwoTone />
+              <PlusCircleTwoTone/>
             </div>
         }
 
@@ -136,10 +152,10 @@ class StrategyEditor extends Component {
               label="子拨打策略名称"
               name="name"
               rules={[
-                { required: true, message: '请输入子拨打策略名称' },
+                {required: true, message: '请输入子拨打策略名称'},
               ]}
             >
-              <Input placeholder="请输入子拨打策略名称" maxLength={40} />
+              <Input placeholder="请输入子拨打策略名称" maxLength={40}/>
             </Form.Item>
           </Form>
 
