@@ -237,11 +237,6 @@ class SubStrategy extends Component {
       <Droppable droppableId={subStrategyItem.id}>
         {(provided, snapshot) => (
           <div className={styles.item} id={propsId}
-            // provided.droppableProps应用的相同元素.
-               {...provided.droppableProps}
-            // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
-               ref={provided.innerRef}
-               isDraggingOver={snapshot.isDraggingOver}
           >
             <div className={classNames(styles.connectorHandler, targetClassName)}
                  data-id={subStrategyItem.id}
@@ -267,7 +262,13 @@ class SubStrategy extends Component {
                 <Button type="primary" size="small" onClick={this.toggleCollapse}>{collapsed ? '展开' : '收起'}</Button>
               </div>
             </div>
-            <div className={styles.judgeType}>
+            <div className={styles.judgeType}
+              // provided.droppableProps应用的相同元素.
+                 {...provided.droppableProps}
+              // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
+                 ref={provided.innerRef}
+                 isDraggingOver={snapshot.isDraggingOver}
+            >
               <span>判断类型</span>
               <div className={styles.judgeTypeBox}>
                 {

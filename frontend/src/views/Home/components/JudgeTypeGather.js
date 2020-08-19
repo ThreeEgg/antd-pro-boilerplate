@@ -185,12 +185,12 @@ class JudgeTypeGather extends Component {
               <div className={styles.content} ref={this.content}>
                 <div className={styles.judgeBox}>
                   {
-                    judgeTypeList && judgeTypeList.length > 0 && judgeTypeList.map((item, index) => {
+                    judgeTypeList && judgeTypeList.length > 0 && judgeTypeList.map((demoItem, demoIndex) => {
                       return (
                         <Draggable
-                          draggableId={`${strategyRuleItem.ruleId}-${item}`}
-                          index={index}
-                          key={`${strategyRuleItem.ruleId}-${item}`}
+                          draggableId={`${strategyRuleItem.ruleId}-${demoItem}`}
+                          index={demoIndex}
+                          key={`${strategyRuleItem.ruleId}-${demoItem}`}
                         >
                           {
                             (provided1, snapshot1) => (
@@ -200,8 +200,8 @@ class JudgeTypeGather extends Component {
                                 ref={provided1.innerRef}
                                 isDragging={snapshot1.isDragging}
                               >
-                                <Tag color="rgb(22,155,213)" key={item}>{
-                                  AllJudgeTypeList.find(demo => demo.nameCd === item) && AllJudgeTypeList.find(demo => demo.nameCd === item).name
+                                <Tag color="rgb(22,155,213)" key={demoItem}>{
+                                  AllJudgeTypeList.find(demo => demo.nameCd === demoItem) && AllJudgeTypeList.find(demo => demo.nameCd === demoItem).name
                                 }</Tag>
                               </span>
                             )
