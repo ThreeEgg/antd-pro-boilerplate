@@ -112,7 +112,7 @@ class StrategyEditor extends Component {
     const { clientHeight, connectorInstance, subStrategyVisible } = this.state;
     const { subStrategyList = [], AllJudgeTypeList = [] } = this.props
     return (
-      <div className={styles.container} style={{ height: clientHeight - 300 }} id="editor">
+      <div className={styles.container} style={{ height: 800 }} id="editor">
         {
           subStrategyList.length > 0 && connectorInstance ? subStrategyList.map((subStrategyItem, index) => {
             return (
