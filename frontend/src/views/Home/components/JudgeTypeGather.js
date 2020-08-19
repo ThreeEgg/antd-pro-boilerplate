@@ -51,8 +51,8 @@ class JudgeTypeGather extends Component {
       });
     }
 
-    const height = this.content.current.scrollHeight;
-    this.content.current.style.setProperty('--max-height', `${height}px`)
+    // const height = this.content.current.scrollHeight;
+    // this.content.current.style.setProperty('--max-height', `${height}px`)
 
   }
 

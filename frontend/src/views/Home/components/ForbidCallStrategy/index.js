@@ -37,7 +37,7 @@ class ForbidCallStrategy extends Component {
     const params = paramsData;
     params.waitDivideMoneyOperator = waitDivideMoneyOperator;
     params.waitDivideMoneyPercent = waitDivideMoneyPercent;
-    params.dayStopCallTime = moment(params.dayStopCallTime).format('HH:mm');
+    params.dayStopCall = moment(params.dayStopCall).format('HH:mm');
     params.caseType = params.caseType.join(',');
     params.status = params.status.join(',');
     setInitialValues(params)
@@ -209,9 +209,9 @@ class ForbidCallStrategy extends Component {
                 <Form.Item label="单电话单日拨打上限" name="phoneDayCallLimit">
                   <Input addonAfter="次" style={{ width: 130 }} />
                 </Form.Item>
-                <Form.Item label="每日截至拨打时间" name="dayStopCallTime">
+                <Form.Item label="每日截至拨打时间" name="dayStopCall">
                   <TimePicker
-                    defaultValue={moment('20:00', 'HH:mm')}
+                    // defaultValue={moment('20:00', 'HH:mm')}
                     format="HH:mm"
                     allowClear={false}
                   />

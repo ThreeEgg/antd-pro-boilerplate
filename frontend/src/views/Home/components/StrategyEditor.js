@@ -41,12 +41,12 @@ class StrategyEditor extends Component {
 
     // 绑定事件监听
     connectorInstance.bind("connection", function (c) {
-      console.log('connection', c);
+      // console.log('connection', c);
     });
 
     // 更新
     connectorInstance.bind("connectionMoved", function (c) {
-      console.log('connectionMoved', c);
+      // console.log('connectionMoved', c);
     });
 
     // 连线删除

@@ -35,7 +35,7 @@ class CallStrategy extends Component {
 
       taskDayCallLimit: 2,
       phoneDayCallLimit: 3,
-      dayStopCallTime: moment('20:00', 'HH:mm'),
+      dayStopCall: moment('20:00', 'HH:mm'),
       weekendStop: '0',
       holidayStop: '0',
     },
@@ -131,16 +131,21 @@ class CallStrategy extends Component {
 
   goToForbidStrategy = () => {
     const { strategy: { stopCallTask }, strategyId } = this.state;
-    if (strategyId) {
+    if (strategyId && stopCallTask) {
       const ForbidInitialValues = stopCallTask;
       ForbidInitialValues.caseType = typeof (ForbidInitialValues.caseType) === 'string' ? ForbidInitialValues.caseType.split(',') : ForbidInitialValues.caseType;
       ForbidInitialValues.status = typeof (ForbidInitialValues.status) === 'string' ? ForbidInitialValues.status.split(',') : ForbidInitialValues.status;
+      ForbidInitialValues.dayStopCall = moment(ForbidInitialValues.dayStopCall, 'HH:mm')
       this.setState({
         ForbidInitialValues
+      }, () => {
+        this.forbidCallRef.current.handleOk()
       })
 
+    } else {
+      this.forbidCallRef.current.handleOk()
     }
-    this.forbidCallRef.current.handleOk()
+
   }
 
   onFinish = paramsData => {
@@ -155,7 +160,7 @@ class CallStrategy extends Component {
     } else {  // 新建
       ForbidInitialValues.waitDivideMoneyOperator = '<=';
       ForbidInitialValues.waitDivideMoneyPercent = 100;
-      ForbidInitialValues.dayStopCallTime = moment(ForbidInitialValues.dayStopCallTime).format('HH:mm');
+      ForbidInitialValues.dayStopCall = ForbidInitialValues.dayStopCall
       ForbidInitialValues.caseType = typeof (ForbidInitialValues.caseType) === 'string' ? ForbidInitialValues.caseType : ForbidInitialValues.caseType.join(',');
       ForbidInitialValues.status = typeof (ForbidInitialValues.status) === 'string' ? ForbidInitialValues.status : ForbidInitialValues.status.join(',');
       params.stopCallTask = ForbidInitialValues
@@ -200,7 +205,6 @@ class CallStrategy extends Component {
 
     const { destination, source, draggableId } = result
     const { strategy } = this.state;
-    console.log('result', result, strategy.subStrategyList)
     if (!destination) {
       return
     }

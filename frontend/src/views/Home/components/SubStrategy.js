@@ -214,9 +214,7 @@ class SubStrategy extends Component {
     return (
       <Droppable droppableId={subStrategyItem.id}>
         {(provided, snapshot) => (
-          <div className={styles.item} id={propsId}
-
-          >
+          <div className={styles.item} id={propsId}>
             <div className={classNames(styles.connectorHandler, targetClassName)}
               data-id={subStrategyItem.id}
             />
