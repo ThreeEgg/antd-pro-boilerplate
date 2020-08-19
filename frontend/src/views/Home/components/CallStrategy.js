@@ -287,6 +287,7 @@ class CallStrategy extends Component {
               >
                 <InputNumber style={{ width: '100%' }} max={999} min={1}
                   step={1}
+                  precision={0}
                   placeholder="请输入拨打次数上限" />
               </Form.Item>
               <Form.Item label="选择线路地区"

@@ -220,6 +220,7 @@ class JudgeTypeGather extends Component {
                       min={0}
                       max={999}
                       step={1}
+                      precision={0}
                       onChange={value => {
                         this.setState({
                           callTimeLimit: value

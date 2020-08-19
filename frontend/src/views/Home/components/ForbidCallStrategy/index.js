@@ -118,6 +118,7 @@ class ForbidCallStrategy extends Component {
                     min={0}
                     step={1}
                     max={100}
+                    precision={0}
                     value={waitDivideMoneyPercent}
                     formatter={value => `${value}%`}
                     parser={value => value.replace('%', '')}
@@ -206,11 +207,19 @@ class ForbidCallStrategy extends Component {
                 <div className="title">
                   <span>顺延拨打任务</span>
                 </div>
-                <Form.Item label="单任务单日拨打上限" name="taskDayCallLimit">
-                  <Input addonAfter="次" style={{ width: 130 }} type="number" />
+                <Form.Item label="单任务单日拨打上限" name="taskDayCallLimit"
+                  rules={[
+                    { required: false, pattern: new RegExp(/^[1-9]\d*$/, "g"), message: "请输入正整数" }
+                  ]}
+                >
+                  <Input addonAfter="次" style={{ width: 130 }} type="number" max={999} min={0} />
                 </Form.Item>
-                <Form.Item label="单电话单日拨打上限" name="phoneDayCallLimit">
-                  <Input addonAfter="次" style={{ width: 130 }} />
+                <Form.Item label="单电话单日拨打上限" name="phoneDayCallLimit"
+                  rules={[
+                    { required: false, pattern: new RegExp(/^[1-9]\d*$/, "g"), message: "请输入正整数" }
+                  ]}
+                >
+                  <Input addonAfter="次" style={{ width: 130 }} type="number" max={999} min={0} />
                 </Form.Item>
                 <Form.Item label="每日截至拨打时间" name="dayStopCall">
                   <TimePicker
