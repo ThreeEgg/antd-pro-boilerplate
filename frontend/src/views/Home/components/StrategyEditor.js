@@ -97,7 +97,7 @@ class StrategyEditor extends Component {
       strategyId,
       strategyRuleList: [],
     }
-    const { success, result, message: msg } = await strategyServices.addSubStrategy(params)
+    const { success, message: msg } = await strategyServices.addSubStrategy(params)
     if (success) {
       message.success(msg)
       getStrategyDetail();

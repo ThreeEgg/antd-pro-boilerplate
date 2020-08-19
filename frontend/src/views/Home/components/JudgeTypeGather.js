@@ -1,7 +1,7 @@
-import { Button, Input, InputNumber, Radio, Select, Tag, Modal } from 'antd'
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Button, Input, InputNumber, Modal, Radio, Select, Tag } from 'antd'
 import classNames from 'classnames'
 import React, { Component, createRef } from 'react'
-import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import styles from './JudgeTypeGather.less'
 
@@ -25,7 +25,6 @@ class JudgeTypeGather extends Component {
   content = createRef();
 
   sourceElement = createRef();
-
 
 
   componentDidMount() {
@@ -85,6 +84,11 @@ class JudgeTypeGather extends Component {
     });
   }
 
+  // 获取当前所有的连接
+  getConnections = () => {
+    return this.props.connector.connections;
+  };
+
   deleteJudgeTypeGather = (strategyRuleItem) => {
 
     const { subStrategyItem, setSubStrategyItem } = this.props;
@@ -94,7 +98,21 @@ class JudgeTypeGather extends Component {
       title: '确认删除吗',
       icon: <ExclamationCircleOutlined />,
       content: '确认',
-      onOk() {
+      onOk: () => {
+        if (strategyRuleItem.ruleId) {
+          // 有ruleId就删除相关联的连接
+          const connections = this.getConnections();
+
+          connections.find(connection => {
+            const { source, target } = connection;
+            const sourceId = source.dataset.id;
+            if (sourceId === strategyRuleItem.ruleId) {
+              this.props.connector.deleteConnection(connection);
+              return true;
+            }
+            return false;
+          });
+        }
         setSubStrategyItem(subStrategyItem, 1)
       },
       onCancel() {
@@ -155,9 +173,11 @@ class JudgeTypeGather extends Component {
 
                 </div>
                 <div className="btnBox">
-                  <Button danger size="small" type="link" onClick={() => this.deleteJudgeTypeGather(strategyRuleItem)}>删除</Button>
+                  <Button danger size="small" type="link"
+                    onClick={() => this.deleteJudgeTypeGather(strategyRuleItem)}>删除</Button>
                   <span ref={this.sourceElement} className={classNames(styles.dot, sourceClassName)}
-                    data-id={strategyRuleItem.ruleId} />
+                    data-id={strategyRuleItem.ruleId}
+                  />
                 </div>
               </div>
 
@@ -199,6 +219,7 @@ class JudgeTypeGather extends Component {
                       value={callTimeLimit}
                       min={0}
                       max={999}
+                      step={1}
                       onChange={value => {
                         this.setState({
                           callTimeLimit: value
@@ -243,4 +264,5 @@ class JudgeTypeGather extends Component {
     )
   }
 }
+
 export default JudgeTypeGather

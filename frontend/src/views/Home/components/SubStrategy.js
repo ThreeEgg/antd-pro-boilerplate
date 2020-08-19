@@ -1,9 +1,9 @@
-import { Button, Tag, Form, Modal, Input, message, Tooltip } from 'antd'
+import * as strategyServices from '@/services/strategy'
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Button, Form, Input, message, Modal, Tag, Tooltip } from 'antd'
 import classNames from 'classnames';
 import React, { Component, createRef } from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
-import * as strategyServices from '@/services/strategy'
-import { ExclamationCircleOutlined } from '@ant-design/icons';
 import JudgeTypeGather from './JudgeTypeGather'
 import styles from './SubStrategy.less';
 
@@ -51,7 +51,6 @@ class SubStrategy extends Component {
   };
 
 
-
   addSubStrategyShow = () => {
     this.props.addSubStrategyShow()
   }
@@ -95,14 +94,37 @@ class SubStrategy extends Component {
 
     // 遍历每个判断类型集，更新连接情况
     const connections = this.getConnections();
+
     subStrategyItem.strategyRuleList.forEach(strategyRule => {
       const { ruleId } = strategyRule;
-      // 先重置状态，重新遍历
+      if (!ruleId) {
+        return;
+      }
+      // 重置连接数据，再重新从当前的连接中遍历出完整的数据
       strategyRule.nextSubStrategyId = null;
       connections.find(connection => {
-        const { source, target } = connection;
-        const sourceId = source.dataset.id;
-        const targetId = target.dataset.id;
+        const { source, target, proxies } = connection;
+        let sourceId = source.dataset.id;
+        let targetId = target.dataset.id;
+
+        if (proxies && proxies.length) {
+          // 如果存在劫持，从劫持中找到真实的source、target
+          // 刚场景存在于，list劫持了内部的source，比如列表滚动导致source元素隐藏，list此时会代理source
+          const innerSourceId = source.id;
+          const innerTargetId = target.id;
+          proxies.forEach(proxy => {
+            const { ep, originalEp } = proxy;
+            // source被劫持
+            if (ep.element.id === innerSourceId) {
+              sourceId = originalEp.element.dataset.id;
+              return;
+            }
+            // target被劫持
+            if (ep.element.id === innerTargetId) {
+              targetId = originalEp.element.dataset.id;
+            }
+          });
+        }
         if (sourceId === ruleId) {
           strategyRule.nextSubStrategyId = targetId;
           return true;
@@ -222,7 +244,8 @@ class SubStrategy extends Component {
               <div className="title" onDoubleClick={this.editSubStrategyName}>
                 <span>子拨打策略1：</span>
                 {
-                  nameEdit ? <Search defaultValue={subStrategyItem.name} enterButton="确认" onSearch={value => this.updateSubStrategyName(value)} /> :
+                  nameEdit ? <Search defaultValue={subStrategyItem.name} enterButton="确认"
+                    onSearch={value => this.updateSubStrategyName(value)} /> :
                     <Tooltip
                       title={subStrategyItem.name}
                     >

@@ -8,7 +8,6 @@ import moment from '@/utils/moment'
 import * as strategyServices from '@/services/strategy'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { getParameter } from '@/utils/tools'
-import dataSources from '@/utils/dataSource'
 import styles from './CallStrategy.less'
 import StrategyEditor from "./StrategyEditor";
 import ForbidCallStrategy from './ForbidCallStrategy'
@@ -52,7 +51,7 @@ class CallStrategy extends Component {
     this.getRouteList()
   }
 
-  setInitialValues = ForbidInitialValues => {
+  setInitialValues = (ForbidInitialValues) => {
     this.setState({
       ForbidInitialValues
     })
@@ -160,7 +159,7 @@ class CallStrategy extends Component {
     } else {  // 新建
       ForbidInitialValues.waitDivideMoneyOperator = '<=';
       ForbidInitialValues.waitDivideMoneyPercent = 100;
-      ForbidInitialValues.dayStopCall = ForbidInitialValues.dayStopCall
+      ForbidInitialValues.dayStopCall = moment(ForbidInitialValues.dayStopCall, 'HH:mm').format('HH:mm')
       ForbidInitialValues.caseType = typeof (ForbidInitialValues.caseType) === 'string' ? ForbidInitialValues.caseType : ForbidInitialValues.caseType.join(',');
       ForbidInitialValues.status = typeof (ForbidInitialValues.status) === 'string' ? ForbidInitialValues.status : ForbidInitialValues.status.join(',');
       params.stopCallTask = ForbidInitialValues
@@ -286,7 +285,9 @@ class CallStrategy extends Component {
                 name="callTimeLimit"
                 rules={[{ required: true, message: '请输入拨打次数上限' }]}
               >
-                <InputNumber style={{ width: '100%' }} max={999} min={1} placeholder="请输入拨打次数上限" />
+                <InputNumber style={{ width: '100%' }} max={999} min={1}
+                  step={1}
+                  placeholder="请输入拨打次数上限" />
               </Form.Item>
               <Form.Item label="选择线路地区"
                 name="areaIdList"

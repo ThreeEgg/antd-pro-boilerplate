@@ -32,12 +32,14 @@ class ForbidCallStrategy extends Component {
   }
 
   onFinish = paramsData => {
+    console.log('paramsData', paramsData)
     const { waitDivideMoneyOperator, waitDivideMoneyPercent } = this.state;
     const { setInitialValues, strategyId, forbidCallTaskId: id } = this.props;
     const params = paramsData;
     params.waitDivideMoneyOperator = waitDivideMoneyOperator;
     params.waitDivideMoneyPercent = waitDivideMoneyPercent;
-    params.dayStopCall = moment(params.dayStopCall).format('HH:mm');
+    params.dayStopCall = moment(params.dayStopCall, "HH:mm").format('HH:mm');
+    console.log('params', params)
     params.caseType = params.caseType.join(',');
     params.status = params.status.join(',');
     setInitialValues(params)
@@ -114,6 +116,7 @@ class ForbidCallStrategy extends Component {
                   </Select>
                   <InputNumber
                     min={0}
+                    step={1}
                     max={100}
                     value={waitDivideMoneyPercent}
                     formatter={value => `${value}%`}
