@@ -329,6 +329,7 @@ class SubStrategy extends Component {
                 </Form.Item>
               </Form>
             </Modal>
+            {provided.placeholder}
           </div>
         )
 

@@ -197,12 +197,18 @@ class CallStrategy extends Component {
   }
 
   onDragEnd = result => {
-    console.log('result', result)
-    const { destination, source, draggableId } = result
 
+    const { destination, source, draggableId } = result
+    const { strategy } = this.state;
+    console.log('result', result, strategy)
     if (!destination) {
       return
     }
+
+    strategy.subStrategyList.forEach(subStrategyItem => {
+
+    })
+
     return result;
   }
 
