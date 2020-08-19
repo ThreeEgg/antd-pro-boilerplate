@@ -1,13 +1,13 @@
-import { Button, Input, InputNumber, Radio, Select, Tag, Modal } from 'antd'
+import {ExclamationCircleOutlined} from '@ant-design/icons';
+import {Button, Input, InputNumber, Modal, Radio, Select, Tag} from 'antd'
 import classNames from 'classnames'
-import React, { Component, createRef } from 'react'
-import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { Draggable, Droppable } from 'react-beautiful-dnd'
+import React, {Component, createRef} from 'react'
+import {Draggable, Droppable} from 'react-beautiful-dnd'
 import styles from './JudgeTypeGather.less'
 
-const { Option } = Select
-const { confirm } = Modal;
-const { Search } = Input;
+const {Option} = Select
+const {confirm} = Modal;
+const {Search} = Input;
 
 
 class JudgeTypeGather extends Component {
@@ -27,9 +27,8 @@ class JudgeTypeGather extends Component {
   sourceElement = createRef();
 
 
-
   componentDidMount() {
-    const { strategyRuleItem } = this.props
+    const {strategyRuleItem} = this.props
     this.setState({
       callTimeLimit: strategyRuleItem.callTimeLimit,
       remindUser: strategyRuleItem.remindUser,
@@ -58,7 +57,7 @@ class JudgeTypeGather extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.strategyRuleItem !== this.props.strategyRuleItem) {
-      const { strategyRuleItem } = this.props
+      const {strategyRuleItem} = this.props
       this.setState({
         callTimeLimit: strategyRuleItem.callTimeLimit,
         remindUser: strategyRuleItem.remindUser,
@@ -85,16 +84,35 @@ class JudgeTypeGather extends Component {
     });
   }
 
+  // 获取当前所有的连接
+  getConnections = () => {
+    return this.props.connector.connections;
+  };
+
   deleteJudgeTypeGather = (strategyRuleItem) => {
 
-    const { subStrategyItem, setSubStrategyItem } = this.props;
+    const {subStrategyItem, setSubStrategyItem} = this.props;
     subStrategyItem.strategyRuleList = subStrategyItem.strategyRuleList.filter((item) => item.ruleId !== strategyRuleItem.ruleId)
 
     confirm({
       title: '确认删除吗',
-      icon: <ExclamationCircleOutlined />,
+      icon: <ExclamationCircleOutlined/>,
       content: '确认',
-      onOk() {
+      onOk: () => {
+        if (strategyRuleItem.ruleId) {
+          // 有ruleId就删除相关联的连接
+          const connections = this.getConnections();
+
+          connections.find(connection => {
+            const {source, target} = connection;
+            const sourceId = source.dataset.id;
+            if (sourceId === strategyRuleItem.ruleId) {
+              this.props.connector.deleteConnection(connection);
+              return true;
+            }
+            return false;
+          });
+        }
         setSubStrategyItem(subStrategyItem, 1)
       },
       onCancel() {
@@ -110,7 +128,7 @@ class JudgeTypeGather extends Component {
   }
 
   updateStrategyRuleName = (value, strategyRuleItem) => {
-    const { subStrategyItem, setSubStrategyItem } = this.props;
+    const {subStrategyItem, setSubStrategyItem} = this.props;
     subStrategyItem.strategyRuleList.forEach(item => {
       if (item.ruleId === strategyRuleItem.ruleId) {
         item.ruleName = value
@@ -123,14 +141,14 @@ class JudgeTypeGather extends Component {
   }
 
   render() {
-    const { callTimeLimit, remindUser, progressHidden, followInterval, followIntervalType, editName } = this.state;
-    const { strategyRuleItem, propsIndex, AllJudgeTypeList = [], sourceClassName, collapsed } = this.props;
-    const { judgeTypeList = [] } = strategyRuleItem
+    const {callTimeLimit, remindUser, progressHidden, followInterval, followIntervalType, editName} = this.state;
+    const {strategyRuleItem, propsIndex, AllJudgeTypeList = [], sourceClassName, collapsed} = this.props;
+    const {judgeTypeList = []} = strategyRuleItem
     return (
       <Droppable droppableId={strategyRuleItem.ruleId}>
         {(provided, snapshot) => (
           <div
-            className={classNames(styles.JudgeTypeGather, { [styles.collapsed]: collapsed })}
+            className={classNames(styles.JudgeTypeGather, {[styles.collapsed]: collapsed})}
             ref={this.container}
           >
             <span
@@ -155,9 +173,11 @@ class JudgeTypeGather extends Component {
 
                 </div>
                 <div className="btnBox">
-                  <Button danger size="small" type="link" onClick={() => this.deleteJudgeTypeGather(strategyRuleItem)}>删除</Button>
+                  <Button danger size="small" type="link"
+                          onClick={() => this.deleteJudgeTypeGather(strategyRuleItem)}>删除</Button>
                   <span ref={this.sourceElement} className={classNames(styles.dot, sourceClassName)}
-                    data-id={strategyRuleItem.ruleId} />
+                        data-id={strategyRuleItem.ruleId}
+                  />
                 </div>
               </div>
 
@@ -208,14 +228,14 @@ class JudgeTypeGather extends Component {
                   </div>
                   <div className="formInputItem">
                     <span>本次拨打结果提示人工</span>
-                    <Radio.Group value={remindUser} onChange={e => this.setState({ remindUser: e.target.value })}>
+                    <Radio.Group value={remindUser} onChange={e => this.setState({remindUser: e.target.value})}>
                       <Radio value>是</Radio>
                       <Radio value={false}>否</Radio>
                     </Radio.Group>
                   </div>
                   <div className="formInputItem">
                     <span>本次拨打结果隐藏催记</span>
-                    <Radio.Group value={progressHidden} onChange={e => this.setState({ progressHidden: e.target.value })}>
+                    <Radio.Group value={progressHidden} onChange={e => this.setState({progressHidden: e.target.value})}>
                       <Radio value>是</Radio>
                       <Radio value={false}>否</Radio>
                     </Radio.Group>
@@ -223,10 +243,10 @@ class JudgeTypeGather extends Component {
                   <div className="formInputItem">
                     <span>下次拨打跟进间隔</span>
                     <div className="multipleBox">
-                      <Input style={{ width: 100 }} value={followInterval}
-                        onChange={e => this.setState({ followInterval: e.target.value })} />
-                      <Select style={{ width: 80, marginLeft: 5 }} value={followIntervalType}
-                        onChange={value => this.setState({ followIntervalType: value })}>
+                      <Input style={{width: 100}} value={followInterval}
+                             onChange={e => this.setState({followInterval: e.target.value})}/>
+                      <Select style={{width: 80, marginLeft: 5}} value={followIntervalType}
+                              onChange={value => this.setState({followIntervalType: value})}>
                         <Option value={1}>天</Option>
                         <Option value={2}>小时</Option>
                       </Select>
@@ -243,4 +263,5 @@ class JudgeTypeGather extends Component {
     )
   }
 }
+
 export default JudgeTypeGather

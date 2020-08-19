@@ -1,14 +1,14 @@
-import { Button, Tag, Form, Modal, Input, message, Tooltip } from 'antd'
-import classNames from 'classnames';
-import React, { Component, createRef } from 'react'
-import { Draggable, Droppable } from 'react-beautiful-dnd'
 import * as strategyServices from '@/services/strategy'
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import {ExclamationCircleOutlined} from '@ant-design/icons';
+import {Button, Form, Input, message, Modal, Tag, Tooltip} from 'antd'
+import classNames from 'classnames';
+import React, {Component, createRef} from 'react'
+import {Draggable, Droppable} from 'react-beautiful-dnd'
 import JudgeTypeGather from './JudgeTypeGather'
 import styles from './SubStrategy.less';
 
-const { confirm } = Modal;
-const { Search } = Input;
+const {confirm} = Modal;
+const {Search} = Input;
 
 class SubStrategy extends Component {
 
@@ -27,7 +27,7 @@ class SubStrategy extends Component {
     });
 
     if (this.props.connector) {
-      const { sourceClassName, targetClassName, sourceSetClassName, propsId } = this.props;
+      const {sourceClassName, targetClassName, sourceSetClassName, propsId} = this.props;
       const container = document.getElementById(propsId);
       Array.from(container.querySelectorAll(`.${sourceSetClassName}`)).forEach(this.makeList);
       Array.from(container.querySelectorAll(`.${targetClassName}`)).forEach(this.makeTarget);
@@ -51,7 +51,6 @@ class SubStrategy extends Component {
   };
 
 
-
   addSubStrategyShow = () => {
     this.props.addSubStrategyShow()
   }
@@ -72,7 +71,7 @@ class SubStrategy extends Component {
   }
 
   updateSubStrategy = async (flag) => {
-    const { subStrategyItem } = this.state;
+    const {subStrategyItem} = this.state;
 
 
     Object.keys(this.judgeTypeGatherRefs).forEach(key => {
@@ -95,14 +94,37 @@ class SubStrategy extends Component {
 
     // 遍历每个判断类型集，更新连接情况
     const connections = this.getConnections();
+
     subStrategyItem.strategyRuleList.forEach(strategyRule => {
-      const { ruleId } = strategyRule;
-      // 先重置状态，重新遍历
+      const {ruleId} = strategyRule;
+      if (!ruleId) {
+        return;
+      }
+      // 重置连接数据，再重新从当前的连接中遍历出完整的数据
       strategyRule.nextSubStrategyId = null;
       connections.find(connection => {
-        const { source, target } = connection;
-        const sourceId = source.dataset.id;
-        const targetId = target.dataset.id;
+        const {source, target, proxies} = connection;
+        let sourceId = source.dataset.id;
+        let targetId = target.dataset.id;
+
+        if (proxies && proxies.length) {
+          // 如果存在劫持，从劫持中找到真实的source、target
+          // 刚场景存在于，list劫持了内部的source，比如列表滚动导致source元素隐藏，list此时会代理source
+          const innerSourceId = source.id;
+          const innerTargetId = target.id;
+          proxies.forEach(proxy => {
+            const {ep, originalEp} = proxy;
+            // source被劫持
+            if (ep.element.id === innerSourceId) {
+              sourceId = originalEp.element.dataset.id;
+              return;
+            }
+            // target被劫持
+            if (ep.element.id === innerTargetId) {
+              targetId = originalEp.element.dataset.id;
+            }
+          });
+        }
         if (sourceId === ruleId) {
           strategyRule.nextSubStrategyId = targetId;
           return true;
@@ -111,7 +133,7 @@ class SubStrategy extends Component {
       });
     });
 
-    const { success } = await strategyServices.updateSubStrategy(params);
+    const {success} = await strategyServices.updateSubStrategy(params);
 
     if (success) {
       if (flag === 0) {
@@ -135,7 +157,7 @@ class SubStrategy extends Component {
   }
 
   onFinish = params => {
-    const { subStrategyItem } = this.state;
+    const {subStrategyItem} = this.state;
     subStrategyItem.strategyRuleList.push({
       judgeTypeList: [],
       callTimeLimit: 999,
@@ -160,7 +182,7 @@ class SubStrategy extends Component {
     const that = this
     confirm({
       title: '删除该子策略',
-      icon: <ExclamationCircleOutlined />,
+      icon: <ExclamationCircleOutlined/>,
       content: '请确认',
       onOk() {
         that.deleteSubStrategy()
@@ -171,8 +193,8 @@ class SubStrategy extends Component {
   }
 
   deleteSubStrategy = async () => {
-    const { subStrategyItem: { id } } = this.state;
-    const { success, message: msg } = await strategyServices.deleteSubStrategy({ subStrategyId: id })
+    const {subStrategyItem: {id}} = this.state;
+    const {success, message: msg} = await strategyServices.deleteSubStrategy({subStrategyId: id})
     if (success) {
       message.success(msg);
       this.props.getStrategyDetail()
@@ -180,15 +202,15 @@ class SubStrategy extends Component {
   }
 
   toggleCollapse = () => {
-    this.setState((prevState) => ({ collapsed: !prevState.collapsed }))
+    this.setState((prevState) => ({collapsed: !prevState.collapsed}))
   }
 
   editSubStrategyName = () => {
-    this.setState({ nameEdit: true })
+    this.setState({nameEdit: true})
   }
 
   updateSubStrategyName = value => {
-    const { subStrategyItem } = this.state
+    const {subStrategyItem} = this.state
     subStrategyItem.name = value
     this.setState({
       subStrategyItem
@@ -196,15 +218,15 @@ class SubStrategy extends Component {
       const success = this.updateSubStrategy()
       if (success) {
         message.success('修改成功')
-        this.setState({ nameEdit: false })
+        this.setState({nameEdit: false})
       }
     })
   }
 
   render() {
-    const { propsId, AllJudgeTypeList = [], sourceClassName, targetClassName, sourceSetClassName, connector } = this.props;
-    const { addStrategyRuleVisible, subStrategyItem, collapsed, nameEdit } = this.state;
-    const { strategyRuleList = [] } = subStrategyItem;
+    const {propsId, AllJudgeTypeList = [], sourceClassName, targetClassName, sourceSetClassName, connector} = this.props;
+    const {addStrategyRuleVisible, subStrategyItem, collapsed, nameEdit} = this.state;
+    const {strategyRuleList = []} = subStrategyItem;
     let isLong = false
     if (subStrategyItem.name && subStrategyItem.name.length > 5) {
       subStrategyItem.abbName = subStrategyItem.name.substring(0, 5)
@@ -216,19 +238,20 @@ class SubStrategy extends Component {
         {(provided, snapshot) => (
           <div className={styles.item} id={propsId}
             // provided.droppableProps应用的相同元素.
-            {...provided.droppableProps}
+               {...provided.droppableProps}
             // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
-            ref={provided.innerRef}
-            isDraggingOver={snapshot.isDraggingOver}
+               ref={provided.innerRef}
+               isDraggingOver={snapshot.isDraggingOver}
           >
             <div className={classNames(styles.connectorHandler, targetClassName)}
-              data-id={subStrategyItem.id}
+                 data-id={subStrategyItem.id}
             />
             <div className={styles.titleBox}>
               <div className="title" onDoubleClick={this.editSubStrategyName}>
                 <span>子拨打策略1：</span>
                 {
-                  nameEdit ? <Search defaultValue={subStrategyItem.name} enterButton="确认" onSearch={value => this.updateSubStrategyName(value)} /> :
+                  nameEdit ? <Search defaultValue={subStrategyItem.name} enterButton="确认"
+                                     onSearch={value => this.updateSubStrategyName(value)}/> :
                     <Tooltip
                       title={subStrategyItem.name}
                     >
@@ -322,10 +345,10 @@ class SubStrategy extends Component {
                   label="判断类型集名称"
                   name="ruleName"
                   rules={[
-                    { required: true, message: '请输入判断类型集名称' },
+                    {required: true, message: '请输入判断类型集名称'},
                   ]}
                 >
-                  <Input placeholder="请输入判断类型集名称" maxLength={40} />
+                  <Input placeholder="请输入判断类型集名称" maxLength={40}/>
                 </Form.Item>
               </Form>
             </Modal>
