@@ -194,12 +194,12 @@ class ForbidCallStrategy extends Component {
                     <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
-                <Form.Item label="任务暂停大于7天" name="taskPauseGreatSevenDay">
+                {/* <Form.Item label="任务暂停大于7天" name="taskPauseGreatSevenDay">
                   <Radio.Group>
                     <Radio value="1">是</Radio>
                     <Radio value="0">否</Radio>
                   </Radio.Group>
-                </Form.Item>
+                </Form.Item> */}
                 <div className="title">
                   <span>顺延拨打任务</span>
                 </div>

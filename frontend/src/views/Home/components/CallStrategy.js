@@ -200,13 +200,51 @@ class CallStrategy extends Component {
 
     const { destination, source, draggableId } = result
     const { strategy } = this.state;
-    console.log('result', result, strategy)
+    console.log('result', result, strategy.subStrategyList)
     if (!destination) {
       return
     }
 
-    strategy.subStrategyList.forEach(subStrategyItem => {
+    strategy.subStrategyList.forEach(subStrategyItem => { // 子拨打=> 判断类型集
+      let flag1 = false;
+      let flag2 = false;
+      if (subStrategyItem.strategyRuleList.find(strategyRuleItem => strategyRuleItem.ruleId === source.droppableId)) {
+        flag1 = true;
+      }
+      if (subStrategyItem.strategyRuleList.find(strategyRuleItem => strategyRuleItem.ruleId === destination.droppableId)) {
+        flag2 = true;
+      }
+      if (source.droppableId === subStrategyItem.id) {
+        const itemName = draggableId.split('-')[1];
+        subStrategyItem.strategyRuleList.forEach(strategyRuleItem => {
+          if (destination.droppableId === strategyRuleItem.ruleId) {
+            subStrategyItem.unusedJudgeTypeList = subStrategyItem.unusedJudgeTypeList.filter(demo => demo !== itemName)
+            strategyRuleItem.judgeTypeList.push(itemName)
+          }
+        })
+      } else if (flag1 && flag2) {  // 判断类型集=> 判断类型集
+        subStrategyItem.strategyRuleList.forEach(strategyRuleItem => {
+          const itemName = draggableId.split('-')[1];
+          if (strategyRuleItem.ruleId === source.droppableId) {
+            strategyRuleItem.judgeTypeList = strategyRuleItem.judgeTypeList.filter(demo => demo !== itemName)
+          }
+          if (strategyRuleItem.ruleId === destination.droppableId) {
+            strategyRuleItem.judgeTypeList.push(itemName)
+          }
+        })
+      } else if (destination.droppableId === subStrategyItem.id) {  // 判断类型集=>子拨打
+        const itemName = draggableId.split('-')[1];
+        subStrategyItem.strategyRuleList.forEach(strategyRuleItem => {
+          if (source.droppableId === strategyRuleItem.ruleId) {
+            strategyRuleItem.judgeTypeList = strategyRuleItem.judgeTypeList.filter(demo => demo !== itemName)
+            subStrategyItem.unusedJudgeTypeList.push(itemName)
+          }
+        })
+      }
+    })
 
+    this.setState({
+      strategy
     })
 
     return result;
