@@ -34,6 +34,14 @@ class SubStrategy extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.subStrategyItem !== this.props.subStrategyItem) {
+      this.setState({
+        subStrategyItem: this.props.subStrategyItem
+      });
+    }
+  }
+
   makeList = (el) => {
     this.props.connector.addList(el);
   }
@@ -139,6 +147,14 @@ class SubStrategy extends Component {
       if (flag === 0) {
         message.success('保存成功')
       }
+
+      /* result.unusedJudgeTypeList = subStrategyItem.unusedJudgeTypeList
+      this.setState({
+        subStrategyItem: result
+      }, () => {
+
+      }) */
+
       this.handleCancel()
       return success;
     }
@@ -174,6 +190,7 @@ class SubStrategy extends Component {
       const success = this.updateSubStrategy()
       if (success) {
         message.success('新增成功')
+        this.props.getStrategyDetail()
       }
     })
   }

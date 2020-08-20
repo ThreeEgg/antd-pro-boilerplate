@@ -47,6 +47,6 @@
     "react-app-rewired": "^2.1.6",
     "styled-components": "^5.1.1"
   },
-  "proxy": "http://172.16.110.21:8080",
+  "proxy": "http://172.16.1.175:61111",
   "homepage": "."
 }
