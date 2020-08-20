@@ -12,5 +12,5 @@ export default {
   updateStopCallTask: '/xiaoGoRobot/strategy/updateStopCallTask', // 更新禁止拨打任务
 
   judgeType: '/xiaoGoRobot/strategy/listJudgeTypes',// 获取判断类型
-  routeList: '/xiaoGoRobot/callCenter/callCenterRouteNoPage',// 获取所有线路
+  routeList: '/xiaoGoRobot/callCenter/listAllCallCenterAreas',// 获取所有线路
 }

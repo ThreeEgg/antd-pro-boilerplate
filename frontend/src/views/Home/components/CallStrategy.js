@@ -306,7 +306,7 @@ class CallStrategy extends Component {
                   {
                     routeList.map(item => {
                       return (
-                        <Option value={item.id} key={item.id}>{item.routeName}</Option>
+                        <Option value={item.id} key={item.id}>{item.areaName}</Option>
                       )
                     })
                   }
