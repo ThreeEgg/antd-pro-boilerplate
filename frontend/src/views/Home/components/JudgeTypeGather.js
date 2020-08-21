@@ -95,9 +95,9 @@ class JudgeTypeGather extends Component {
     subStrategyItem.strategyRuleList = subStrategyItem.strategyRuleList.filter((item) => item.ruleId !== strategyRuleItem.ruleId)
 
     confirm({
-      title: '确认删除吗',
+      title: '是否删除该判断类型集',
       icon: <ExclamationCircleOutlined />,
-      content: '确认',
+      content: '',
       onOk: () => {
         if (strategyRuleItem.ruleId) {
           // 有ruleId就删除相关联的连接

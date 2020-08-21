@@ -22,7 +22,7 @@ class CallStrategy extends Component {
     strategy: {},
     ForbidInitialValues: {
       waitDivideMoneyOperator: '<=',
-      waitDivideMoneyPercent: 100,
+      waitDivideMoneyPercent: 0,
       caseType: ['B', 'C'],
       caseStopCall: '1',
       remissionAccount: '1',

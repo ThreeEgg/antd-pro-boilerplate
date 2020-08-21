@@ -198,9 +198,9 @@ class SubStrategy extends Component {
   deleteSubStrategyConfirm = () => {
     const that = this
     confirm({
-      title: '删除该子策略',
+      title: '是否删除该子策略',
       icon: <ExclamationCircleOutlined />,
-      content: '请确认',
+      content: '',
       onOk() {
         that.deleteSubStrategy()
       },
