@@ -154,7 +154,7 @@ class JudgeTypeGather extends Component {
             <span
               ref={provided.innerRef}
               {...provided.droppableProps}
-              isDraggingOver={snapshot.isDraggingOver}
+            // isDraggingOver={snapshot.isDraggingOver}
             >
               <div className={styles.gatherTitleBox}>
                 <div className="title" onDoubleClick={this.editJudgeTypeGather}>
@@ -198,7 +198,7 @@ class JudgeTypeGather extends Component {
                                 {...provided1.draggableProps}
                                 {...provided1.dragHandleProps}
                                 ref={provided1.innerRef}
-                                isDragging={snapshot1.isDragging}
+                              // isDragging={snapshot1.isDragging}
                               >
                                 <Tag color="rgb(22,155,213)" key={demoItem}>{
                                   AllJudgeTypeList.find(demo => demo.nameCd === demoItem) && AllJudgeTypeList.find(demo => demo.nameCd === demoItem).name

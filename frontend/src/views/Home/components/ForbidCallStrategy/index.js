@@ -25,6 +25,16 @@ class ForbidCallStrategy extends Component {
     })
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.initialValues !== this.props.initialValues) {
+      const { initialValues } = this.props;
+      this.setState({
+        waitDivideMoneyOperator: initialValues.waitDivideMoneyOperator,
+        waitDivideMoneyPercent: initialValues.waitDivideMoneyPercent,
+      })
+    }
+  }
+
   colAdapt = (xs, sm, md, lg, xl, xxl) => {
     return {
       xs, sm, md, lg, xl, xxl

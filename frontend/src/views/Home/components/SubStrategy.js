@@ -71,6 +71,7 @@ class SubStrategy extends Component {
       if (success) {
         if (flag === 1) {
           message.success('删除成功')
+          this.props.getStrategyDetail()
         } else if (flag === 2) {
           message.success('修改成功')
         }
@@ -196,12 +197,29 @@ class SubStrategy extends Component {
   }
 
   deleteSubStrategyConfirm = () => {
+    const { subStrategyItem } = this.state
+    const { connector } = this.props
     const that = this
     confirm({
       title: '是否删除该子策略',
       icon: <ExclamationCircleOutlined />,
       content: '',
       onOk() {
+        if (subStrategyItem.id) {
+          const { connections } = connector;
+          Array.from(connections).forEach((connection) => {
+            const { source, target } = connection;
+            const sourceId = source.dataset.id;
+            const targetId = target.dataset.id;
+
+            if (subStrategyItem.strategyRuleList.find(strategyRuleItem => strategyRuleItem.ruleId === sourceId)) {
+              connector.deleteConnection(connection);
+            }
+            if (targetId === subStrategyItem.id) {
+              connector.deleteConnection(connection);
+            }
+          })
+        }
         that.deleteSubStrategy()
       },
       onCancel() {
@@ -256,6 +274,7 @@ class SubStrategy extends Component {
           <div className={styles.item} id={propsId}>
             <div className={classNames(styles.connectorHandler, targetClassName)}
               data-id={subStrategyItem.id}
+              style={{ background: '#e6e6e6' }}
             />
             <div className={styles.titleBox}>
               <div className="title" onDoubleClick={this.editSubStrategyName}>
@@ -283,7 +302,7 @@ class SubStrategy extends Component {
               {...provided.droppableProps}
               // 为了使 droppable 能够正常工作必须 绑定到最高可能的DOM节点中provided.innerRef.
               ref={provided.innerRef}
-              isDraggingOver={snapshot.isDraggingOver}
+            // isDraggingOver={snapshot.isDraggingOver}
             >
               <span>判断类型</span>
               <div className={styles.judgeTypeBox}>
@@ -301,7 +320,7 @@ class SubStrategy extends Component {
                               {...provided1.draggableProps}
                               {...provided1.dragHandleProps}
                               ref={provided1.innerRef}
-                              isDragging={snapshot1.isDragging}
+                            // isDragging={snapshot1.isDragging}
                             >
                               <Tag color="rgb(22,155,213)" key={item}>{
                                 AllJudgeTypeList.find(demo => demo.nameCd === item) && AllJudgeTypeList.find(demo => demo.nameCd === item).name

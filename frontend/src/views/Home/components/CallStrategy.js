@@ -187,8 +187,13 @@ class CallStrategy extends Component {
   }
 
   selectRouteLimit = (rule, value, callback) => {
+    console.log('value', value)
     if (!value) {
       callback('请选择线路')
+      return
+    }
+    if (value.find(item => item === "0") && value.length !== 1) {
+      callback('选择全部时，禁止选择其他线路')
       return
     }
     if (value.length > 10) {
