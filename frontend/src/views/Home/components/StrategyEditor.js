@@ -122,6 +122,7 @@ class StrategyEditor extends Component {
                 targetClassName={targetClassName}
                 sourceSetClassName={sourceSetClassName}
                 propsId={`list-${index + 1}`}
+                propsIndex={index + 1}
                 subStrategyItem={subStrategyItem}
                 key={subStrategyItem.id}
                 AllJudgeTypeList={AllJudgeTypeList}

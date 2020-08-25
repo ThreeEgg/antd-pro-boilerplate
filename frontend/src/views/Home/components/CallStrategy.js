@@ -207,10 +207,7 @@ class CallStrategy extends Component {
     if (!destination) {
       return
     }
-    console.log('drag', result)
-
     strategy.subStrategyList.forEach(subStrategyItem => { // 子拨打=> 判断类型集
-      console.log('子拨打=> 判断类型集')
       let flag1 = false;
       let flag2 = false;
       if (subStrategyItem.strategyRuleList.find(strategyRuleItem => strategyRuleItem.ruleId === source.droppableId)) {
@@ -223,7 +220,6 @@ class CallStrategy extends Component {
         const itemName = draggableId.split('-')[1];
         subStrategyItem.strategyRuleList.forEach(strategyRuleItem => {
           if (destination.droppableId === strategyRuleItem.ruleId) {
-            console.log('子拨打=> 判断类型集,成立')
             subStrategyItem.unusedJudgeTypeList = subStrategyItem.unusedJudgeTypeList.filter(demo => demo !== itemName)
             strategyRuleItem.judgeTypeList.push(itemName)
           }

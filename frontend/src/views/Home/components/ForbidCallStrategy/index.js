@@ -14,7 +14,7 @@ class ForbidCallStrategy extends Component {
   state = {
     forbidCallVisible: false,
     waitDivideMoneyOperator: '<=',
-    waitDivideMoneyPercent: 100,
+    waitDivideMoneyPercent: 0,
   }
 
   componentDidMount() {
@@ -32,14 +32,12 @@ class ForbidCallStrategy extends Component {
   }
 
   onFinish = paramsData => {
-    console.log('paramsData', paramsData)
     const { waitDivideMoneyOperator, waitDivideMoneyPercent } = this.state;
     const { setInitialValues, strategyId, forbidCallTaskId: id } = this.props;
     const params = paramsData;
     params.waitDivideMoneyOperator = waitDivideMoneyOperator;
     params.waitDivideMoneyPercent = waitDivideMoneyPercent;
     params.dayStopCall = moment(params.dayStopCall, "HH:mm").format('HH:mm');
-    console.log('params', params)
     params.caseType = params.caseType.join(',');
     params.status = params.status.join(',');
     setInitialValues(params)
@@ -80,7 +78,7 @@ class ForbidCallStrategy extends Component {
     return (
       <Modal
         width="60%"
-        title="禁止&顺延拨打管理"
+        title="终止&顺延拨打管理"
         visible={forbidCallVisible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
@@ -97,7 +95,7 @@ class ForbidCallStrategy extends Component {
             onFinish={this.onFinish}
           >
             <div className="title">
-              <span>终止拨打策略</span>
+              <span>终止拨打任务</span>
               {/* <Form.Item>
                 <Button type="primary" htmlType="submit">
                   保存

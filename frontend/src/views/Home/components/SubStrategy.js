@@ -241,7 +241,7 @@ class SubStrategy extends Component {
   }
 
   render() {
-    const { propsId, AllJudgeTypeList = [], sourceClassName, targetClassName, sourceSetClassName, connector } = this.props;
+    const { propsId, AllJudgeTypeList = [], sourceClassName, targetClassName, sourceSetClassName, connector, propsIndex } = this.props;
     const { addStrategyRuleVisible, subStrategyItem, collapsed, nameEdit } = this.state;
     const { strategyRuleList = [] } = subStrategyItem;
     let isLong = false
@@ -259,7 +259,7 @@ class SubStrategy extends Component {
             />
             <div className={styles.titleBox}>
               <div className="title" onDoubleClick={this.editSubStrategyName}>
-                <span>子拨打策略1：</span>
+                <span>子拨打策略{propsIndex}：</span>
                 {
                   nameEdit ? <Search defaultValue={subStrategyItem.name} enterButton="确认"
                     onSearch={value => this.updateSubStrategyName(value)} /> :
