@@ -66,8 +66,8 @@ class SubStrategy extends Component {
   setSubStrategyItem = (subStrategyItem, flag) => {
     this.setState({
       subStrategyItem,
-    }, () => {
-      const success = this.updateSubStrategy()
+    }, async () => {
+      const success = await this.updateSubStrategy()
       if (success) {
         if (flag === 1) {
           message.success('删除成功')
@@ -143,7 +143,6 @@ class SubStrategy extends Component {
     });
 
     const { success } = await strategyServices.updateSubStrategy(params);
-
     if (success) {
       if (flag === 0) {
         message.success('保存成功')
@@ -157,8 +156,11 @@ class SubStrategy extends Component {
       }) */
 
       this.handleCancel()
-      return success;
+      // return success;
     }
+    return success
+
+
   }
 
   handleCancel = () => {
@@ -187,8 +189,8 @@ class SubStrategy extends Component {
     })
     this.setState({
       subStrategyItem
-    }, () => {
-      const success = this.updateSubStrategy()
+    }, async () => {
+      const success = await this.updateSubStrategy()
       if (success) {
         message.success('新增成功')
         this.props.getStrategyDetail()
