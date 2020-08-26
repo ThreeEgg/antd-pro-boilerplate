@@ -1,19 +1,16 @@
-import React, { Component, createRef } from 'react'
-import { withRouter } from 'react-router-dom'
-import {
-  Button, Input, Select, Row, Col,
-  InputNumber, Form, message
-} from 'antd'
-import moment from '@/utils/moment'
 import * as strategyServices from '@/services/strategy'
-import { DragDropContext } from 'react-beautiful-dnd'
-import { getParameter } from '@/utils/tools'
+import moment from '@/utils/moment'
+import {getParameter} from '@/utils/tools'
+import {Button, Form, Input, InputNumber, message, Select} from 'antd'
+import React, {Component, createRef} from 'react'
+import {DragDropContext} from 'react-beautiful-dnd'
+import {withRouter} from 'react-router-dom'
 import styles from './CallStrategy.less'
-import StrategyEditor from "./StrategyEditor";
 import ForbidCallStrategy from './ForbidCallStrategy'
+import StrategyEditor from "./StrategyEditor";
 
-const { TextArea } = Input;
-const { Option } = Select;
+const {TextArea} = Input;
+const {Option} = Select;
 
 
 class CallStrategy extends Component {
@@ -58,7 +55,7 @@ class CallStrategy extends Component {
   }
 
   getRouteList = async () => {
-    const { success, result } = await strategyServices.getRouteList()
+    const {success, result} = await strategyServices.getRouteList()
     if (success) {
       this.setState({
         routeList: result
@@ -67,8 +64,8 @@ class CallStrategy extends Component {
   }
 
   getJudgeType = async () => {
-    const { strategyId } = this.state;
-    const { success, result } = await strategyServices.getJudgeType();
+    const {strategyId} = this.state;
+    const {success, result} = await strategyServices.getJudgeType();
     if (success) {
       this.setState({
         AllJudgeTypeList: result
@@ -82,10 +79,10 @@ class CallStrategy extends Component {
   }
 
   getStrategyDetail = async () => {
-    const { strategyId } = this.state;
-    const { success, result } = await strategyServices.getStrategyDetail({ strategyId })
+    const {strategyId} = this.state;
+    const {success, result} = await strategyServices.getStrategyDetail({strategyId})
     if (success) {
-      const { setFieldsValue } = this.strategyDetailForm.current;
+      const {setFieldsValue} = this.strategyDetailForm.current;
       setFieldsValue({
         strategyName: result.strategyName,
         callTimeLimit: result.callTimeLimit,
@@ -101,7 +98,7 @@ class CallStrategy extends Component {
   }
 
   handleStrategy = strategy => {
-    const { AllJudgeTypeList } = this.state;
+    const {AllJudgeTypeList} = this.state;
     const AllJudgeTypeIdList = [];
     AllJudgeTypeList.forEach(item => {
       AllJudgeTypeIdList.push(item.nameCd);
@@ -129,7 +126,7 @@ class CallStrategy extends Component {
   }
 
   goToForbidStrategy = () => {
-    const { strategy: { stopCallTask }, strategyId } = this.state;
+    const {strategy: {stopCallTask}, strategyId} = this.state;
     if (strategyId && stopCallTask) {
       const ForbidInitialValues = stopCallTask;
       ForbidInitialValues.caseType = typeof (ForbidInitialValues.caseType) === 'string' ? ForbidInitialValues.caseType.split(',') : ForbidInitialValues.caseType;
@@ -149,7 +146,7 @@ class CallStrategy extends Component {
 
   onFinish = paramsData => {
     const params = paramsData || {};
-    const { strategyId, ForbidInitialValues } = this.state;
+    const {strategyId, ForbidInitialValues} = this.state;
     params.strategyType = 1;
 
     if (strategyId) {   // 更新
@@ -168,14 +165,14 @@ class CallStrategy extends Component {
   }
 
   updateStrategy = async (params) => {
-    const { success, message: msg } = await strategyServices.updateStrategy(params)
+    const {success, message: msg} = await strategyServices.updateStrategy(params)
     if (success) {
       message.success(msg)
     }
   }
 
   addStrategy = async (params) => {
-    const { success, result, message: msg } = await strategyServices.addStrategy(params)
+    const {success, result, message: msg} = await strategyServices.addStrategy(params)
     if (success) {
       message.success(msg)
       result.subStrategyList = []
@@ -207,8 +204,8 @@ class CallStrategy extends Component {
 
   onDragEnd = result => {
 
-    const { destination, source, draggableId } = result
-    const { strategy } = this.state;
+    const {destination, source, draggableId} = result
+    const {strategy} = this.state;
     if (!destination) {
       return
     }
@@ -258,81 +255,76 @@ class CallStrategy extends Component {
   }
 
   render() {
-    const { strategy: { subStrategyList }, ForbidInitialValues, AllJudgeTypeList,
-      routeList, strategyId, strategy: { stopCallTask }
+    const {
+      strategy: {subStrategyList}, ForbidInitialValues, AllJudgeTypeList,
+      routeList, strategyId, strategy: {stopCallTask}
     } = this.state
 
     return (
       <div className={styles.CallStrategy}>
-        <Form className={styles.baseInfoInput} onFinish={this.onFinish} ref={this.strategyDetailForm}>
-          <div className={styles.titleBox}>
-            <div className="title">
-              <span>拨打策略集-智能对话</span>
-              <Button type="link" onClick={this.goToForbidStrategy}>设置禁止&顺延拨打管理</Button>
-            </div>
-            <div className="btnBox">
-              {/* <Button>返回</Button> */}
-              <Form.Item>
-                <Button type="primary" htmlType="submit">保存</Button>
-              </Form.Item>
-            </div>
+        {/* 标题 */}
+        <div className={styles.titleBox}>
+          <div className="title">
+            <span>拨打策略集-智能对话</span>
+            <Button type="link" onClick={this.goToForbidStrategy}>设置禁止&顺延拨打管理</Button>
           </div>
-          <Row>
-            <Col {...this.colAdapt(24, 24, 24, 24, 10, 10)} className={styles.formItemBox}>
-              <Form.Item label="策略名称"
-                name="strategyName"
-                rules={[{ required: true, message: '请输入策略名称' }]}
-              >
-                <Input placeholder="请输入策略名称" />
-              </Form.Item>
-              <Form.Item label="总拨打次数上限"
-                name="callTimeLimit"
-                rules={[{ required: true, message: '请输入拨打次数上限' }]}
-              >
-                <InputNumber style={{ width: '100%' }} max={999} min={1}
-                  step={1}
-                  precision={0}
-                  placeholder="请输入拨打次数上限" />
-              </Form.Item>
-              <Form.Item label="选择线路地区"
-                name="areaIdList"
-                rules={[
-                  { required: true, message: ' ' },
-                  { validator: this.selectRouteLimit }
-                ]}
-              >
-                <Select mode="multiple"
-                  placeholder="请选择线路地区"
-                >
-                  {
-                    routeList.map(item => {
-                      return (
-                        <Option value={item.id} key={item.id}>{item.areaName}</Option>
-                      )
-                    })
-                  }
-                </Select>
-              </Form.Item>
-              <Form.Item label="首次拨打生效间隔"
-                name="firstCallInterval"
-                rules={[{ required: true, message: '请选择手次拨打生效间隔' }]}
-              >
-                <Select placeholder="请选择首次拨打生效间隔">
-                  <Option value={0}>立即生效</Option>
-                  <Option value={1}>1天</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item label="策略说明"
-                name="comment"
-                rules={[{ required: true, message: '请输入策略说明' }]}
-              >
-                <TextArea maxLength={400} placeholder="请输入策略说明，不超过400字" />
-              </Form.Item>
-            </Col>
-          </Row>
-
+          <div className="btnBox">
+            <Button type="primary" htmlType="submit" form={'form'}>保存</Button>
+          </div>
+        </div>
+        <Form id={'form'} className={styles.baseInfoInput} layout='inline' onFinish={this.onFinish}
+              ref={this.strategyDetailForm}>
+          <Form.Item label="策略名称"
+                     name="strategyName"
+                     rules={[{required: true, message: '请输入策略名称'}]}
+          >
+            <Input style={{width: 200}} placeholder="请输入策略名称"/>
+          </Form.Item>
+          <Form.Item label="总拨打次数上限"
+                     name="callTimeLimit"
+                     rules={[{required: true, message: '请输入拨打次数上限'}]}
+          >
+            <InputNumber max={999} min={1}
+                         step={1}
+                         precision={0}
+                         placeholder="请输入拨打次数上限"/>
+          </Form.Item>
+          <Form.Item label="选择线路地区"
+                     name="areaIdList"
+                     rules={[
+                       {required: true, message: ' '},
+                       {validator: this.selectRouteLimit}
+                     ]}
+          >
+            <Select style={{width: 250}} mode="multiple"
+                    placeholder="请选择线路地区"
+            >
+              {
+                routeList.map(item => {
+                  return (
+                    <Option value={item.id} key={item.id}>{item.areaName}</Option>
+                  )
+                })
+              }
+            </Select>
+          </Form.Item>
+          <Form.Item label="首次拨打生效间隔"
+                     name="firstCallInterval"
+                     rules={[{required: true, message: '请选择手次拨打生效间隔'}]}
+          >
+            <Select style={{width: 100}} placeholder="请选择首次拨打生效间隔">
+              <Option value={0}>立即生效</Option>
+              <Option value={1}>1天</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="策略说明"
+                     name="comment"
+                     rules={[{required: true, message: '请输入策略说明'}]}
+          >
+            <TextArea className={styles.textarea} maxLength={400} placeholder="请输入策略说明，不超过400字"/>
+          </Form.Item>
         </Form>
-        <div className={styles.svgBox}>
+        <div className={styles.strategyEditor}>
           <DragDropContext onDragEnd={this.onDragEnd}>
             {strategyId && <StrategyEditor
               subStrategyList={subStrategyList}

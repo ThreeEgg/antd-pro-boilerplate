@@ -1,8 +1,8 @@
 import * as strategyServices from '@/services/strategy'
 // import * as strategyServices from '@/services/strategy'
-import { PlusCircleTwoTone } from '@ant-design/icons';
-import { Form, Input, message, Modal } from 'antd'
-import React, { Component } from 'react';
+import {PlusCircleTwoTone} from '@ant-design/icons';
+import {Form, Input, message, Modal} from 'antd'
+import React, {Component} from 'react';
 import styles from './StrategyEditor.less';
 import SubStrategy from './SubStrategy';
 
@@ -26,13 +26,13 @@ class StrategyEditor extends Component {
 
   initConnector = () => {
     const connectorInstance = window.jsPlumb.newInstance({
-      connector: ['Flowchart', { midpoint: 0.1, cornerRadius: 4 }],
-      paintStyle: { strokeWidth: 3, stroke: "#008dc2" },
+      connector: ['Flowchart', {midpoint: 0.1, cornerRadius: 4}],
+      paintStyle: {strokeWidth: 3, stroke: "#008dc2"},
       hoverPaintStyle: {
         stroke: "#006dc2",
       },
-      endpoint: ["Dot", { radius: 8 }],
-      endpointStyle: { fill: "#008dc2" },
+      endpoint: ["Dot", {radius: 8}],
+      endpointStyle: {fill: "#008dc2"},
       endpointHoverStyle: {
         fill: "#006dc2",
       },
@@ -91,13 +91,13 @@ class StrategyEditor extends Component {
   }
 
   onFinish = async (paramsData) => {
-    const { strategyId, getStrategyDetail } = this.props
+    const {strategyId, getStrategyDetail} = this.props
     const params = {
       name: paramsData.name,
       strategyId,
       strategyRuleList: [],
     }
-    const { success, message: msg } = await strategyServices.addSubStrategy(params)
+    const {success, message: msg} = await strategyServices.addSubStrategy(params)
     if (success) {
       message.success(msg)
       getStrategyDetail();
@@ -106,33 +106,32 @@ class StrategyEditor extends Component {
   }
 
 
-
   render() {
-    const { sourceClassName, targetClassName, sourceSetClassName, addSubStrategyShow } = this;
-    const { clientHeight, connectorInstance, subStrategyVisible } = this.state;
-    const { subStrategyList = [], AllJudgeTypeList = [] } = this.props
+    const {sourceClassName, targetClassName, sourceSetClassName, addSubStrategyShow} = this;
+    const {clientHeight, connectorInstance, subStrategyVisible} = this.state;
+    const {subStrategyList = [], AllJudgeTypeList = []} = this.props
     return (
-      <div className={styles.container} style={{ height: 800 }} id="editor">
+      <div className={styles.container} id="editor">
         {
           subStrategyList.length > 0 && connectorInstance ? subStrategyList.map((subStrategyItem, index) => {
-            return (
-              <SubStrategy
-                connector={connectorInstance}
-                sourceClassName={sourceClassName}
-                targetClassName={targetClassName}
-                sourceSetClassName={sourceSetClassName}
-                propsId={`list-${index + 1}`}
-                propsIndex={index + 1}
-                subStrategyItem={subStrategyItem}
-                key={subStrategyItem.id}
-                AllJudgeTypeList={AllJudgeTypeList}
-                addSubStrategyShow={addSubStrategyShow}
-                getStrategyDetail={this.props.getStrategyDetail}
-              />
-            )
-          }) :
+              return (
+                <SubStrategy
+                  connector={connectorInstance}
+                  sourceClassName={sourceClassName}
+                  targetClassName={targetClassName}
+                  sourceSetClassName={sourceSetClassName}
+                  propsId={`list-${index + 1}`}
+                  propsIndex={index + 1}
+                  subStrategyItem={subStrategyItem}
+                  key={subStrategyItem.id}
+                  AllJudgeTypeList={AllJudgeTypeList}
+                  addSubStrategyShow={addSubStrategyShow}
+                  getStrategyDetail={this.props.getStrategyDetail}
+                />
+              )
+            }) :
             <div className={styles.empty} onClick={this.addSubStrategyShow}>
-              <PlusCircleTwoTone />
+              <PlusCircleTwoTone/>
             </div>
         }
 
@@ -152,10 +151,10 @@ class StrategyEditor extends Component {
               label="子拨打策略名称"
               name="name"
               rules={[
-                { required: true, message: '请输入子拨打策略名称' },
+                {required: true, message: '请输入子拨打策略名称'},
               ]}
             >
-              <Input placeholder="请输入子拨打策略名称" maxLength={40} />
+              <Input placeholder="请输入子拨打策略名称" maxLength={40}/>
             </Form.Item>
           </Form>
 

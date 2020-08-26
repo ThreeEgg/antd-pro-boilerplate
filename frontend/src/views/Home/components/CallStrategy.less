@@ -1,36 +1,62 @@
-.CallStrategy{
-  padding:8px;
+.CallStrategy {
+  height: 100vh;
+  padding: 8px;
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.baseInfoInput{
-  .titleBox{
-    display:flex;
-    justify-content:space-between;
-    :global{
-      .title{
-        >span{
-          color:black;
-          font-size: 20px;
-          font-weight: 600;
-        }
+.titleBox {
+  display: flex;
+  justify-content: space-between;
+
+  :global {
+    .title {
+      > span {
+        color: black;
+        font-size: 20px;
+        font-weight: 600;
       }
-      .btnBox{
-        display: flex;
-        >.ant-btn{
-          margin-right:5px;
-        }
+    }
+
+    .btnBox {
+      display: flex;
+
+      > .ant-btn {
+        margin-right: 5px;
       }
     }
   }
 }
 
-.formItemBox{
+.baseInfoInput {
+  margin-bottom: 4px !important;
+
   :global {
-    .ant-form-item{
+    .ant-form-item {
+      margin-bottom: 4px !important;
+    }
+  }
+}
+
+.textarea {
+  resize: none;
+  width: 50vw !important;
+}
+
+.strategyEditor {
+  flex: 1;
+  overflow: hidden;
+}
+
+.formItemBox {
+  :global {
+    .ant-form-item {
       margin-bottom: 10px;
-      .ant-form-item-label{
-        width:18%;
+
+      .ant-form-item-label {
+        width: 18%;
         text-align: left;
       }
     }
