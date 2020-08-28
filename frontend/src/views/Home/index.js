@@ -15,7 +15,7 @@ class Home extends Component {
     if (Id) {
       setCookie('SHAREJSESSIONID', Id)
     } else {
-      setCookie('SHAREJSESSIONID', '7d07b3b4-da00-4a62-b524-30565c71faf0')
+      setCookie('SHAREJSESSIONID', 'ebc72716-a922-4e8d-ae9f-a9f97df2e40c')
     }
 
     setCookie('copyFlag', 'true')

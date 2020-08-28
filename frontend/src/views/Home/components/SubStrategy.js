@@ -177,6 +177,7 @@ class SubStrategy extends Component {
 
   onFinish = params => {
     const { subStrategyItem } = this.state;
+
     subStrategyItem.strategyRuleList.push({
       judgeTypeList: [],
       callTimeLimit: 999,
@@ -194,6 +195,7 @@ class SubStrategy extends Component {
       if (success) {
         message.success('新增成功')
         this.props.getStrategyDetail()
+
       }
     })
   }
@@ -377,6 +379,7 @@ class SubStrategy extends Component {
                 form: 'judgeTypeGatherForm',
                 htmlType: 'submit',
               }}
+              destroyOnClose
             >
               <Form name="judgeTypeGatherForm" onFinish={this.onFinish}>
                 <Form.Item

@@ -50,6 +50,8 @@ class ForbidCallStrategy extends Component {
     params.dayStopCall = moment(params.dayStopCall, "HH:mm").format('HH:mm');
     params.caseType = params.caseType.join(',');
     params.status = params.status.join(',');
+    params.seekWarning = params.seekWarning.join(',');
+
     setInitialValues(params)
 
     params.strategyId = strategyId;
@@ -201,10 +203,28 @@ class ForbidCallStrategy extends Component {
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item label="禁止小Go拨打" name="notXiaoGo">
-                  <Radio.Group>
+                  <Radio.Group disabled>
                     <Radio value="1">是</Radio>
                     <Radio value="0">否</Radio>
                   </Radio.Group>
+                </Form.Item>
+                <Form.Item label="投诉预警" name="seekWarning">
+                  <Checkbox.Group>
+                    <Row>
+                      <Col span={4}>
+                        <Checkbox value="wei">危</Checkbox>
+                      </Col>
+                      <Col span={4}>
+                        <Checkbox value="xian">险</Checkbox>
+                      </Col>
+                      <Col span={4}>
+                        <Checkbox value="jing">警</Checkbox>
+                      </Col>
+                      <Col span={4}>
+                        <Checkbox value="su">诉</Checkbox>
+                      </Col>
+                    </Row>
+                  </Checkbox.Group>
                 </Form.Item>
                 {/* <Form.Item label="任务暂停大于7天" name="taskPauseGreatSevenDay">
                   <Radio.Group>

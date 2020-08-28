@@ -245,8 +245,8 @@ class JudgeTypeGather extends Component {
                   <div className="formInputItem">
                     <span>下次拨打跟进间隔</span>
                     <div className="multipleBox">
-                      <Input style={{ width: 100 }} value={followInterval}
-                        onChange={e => this.setState({ followInterval: e.target.value })} />
+                      <Input style={{ width: 100 }} value={followInterval} type="number"
+                        onChange={e => this.setState({ followInterval: parseInt(e.target.value || 0, 10) })} />
                       <Select style={{ width: 80, marginLeft: 5 }} value={followIntervalType}
                         onChange={value => this.setState({ followIntervalType: value })}>
                         <Option value={1}>天</Option>
