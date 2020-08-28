@@ -282,7 +282,10 @@ class CallStrategy extends Component {
           ref={this.strategyDetailForm}>
           <Form.Item label="策略名称"
             name="strategyName"
-            rules={[{ required: true, message: '请输入策略名称' }]}
+            rules={[
+              { required: true, message: '请输入策略名称' },
+              { type: "string", max: 200, message: '策略名称不得超过200个字' }
+            ]}
           >
             <Input style={{ width: 200 }} placeholder="请输入策略名称" />
           </Form.Item>
@@ -308,7 +311,7 @@ class CallStrategy extends Component {
               {
                 routeList.map(item => {
                   return (
-                    <Option value={item.id} key={item.id}>{item.areaName}</Option>
+                    <Option value={item.id} key={item.id} disabled={item.areaUseState === '0'}>{item.areaName}</Option>
                   )
                 })
               }
