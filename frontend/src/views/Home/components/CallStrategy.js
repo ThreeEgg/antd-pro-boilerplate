@@ -163,6 +163,7 @@ class CallStrategy extends Component {
       ForbidInitialValues.dayStopCall = moment(ForbidInitialValues.dayStopCall, 'HH:mm').format('HH:mm')
       ForbidInitialValues.caseType = typeof (ForbidInitialValues.caseType) === 'string' ? ForbidInitialValues.caseType : ForbidInitialValues.caseType.join(',');
       ForbidInitialValues.status = typeof (ForbidInitialValues.status) === 'string' ? ForbidInitialValues.status : ForbidInitialValues.status.join(',');
+      ForbidInitialValues.seekWarning = typeof (ForbidInitialValues.seekWarning) === 'string' ? ForbidInitialValues.seekWarning : ForbidInitialValues.seekWarning.join(',');
       params.stopCallTask = ForbidInitialValues
       this.addStrategy(params)
     }
