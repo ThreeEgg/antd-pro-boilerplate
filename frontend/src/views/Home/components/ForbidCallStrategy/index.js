@@ -118,7 +118,7 @@ class ForbidCallStrategy extends Component {
             </div>
             <Row >
               <Col span={24}>
-                <Form.Item label="最新欠款金额/委案金额" className="moneyInput">
+                <Form.Item label="最新欠款金额/委案金额(不打)" className="moneyInput">
                   <Select style={{ width: 100 }} value={waitDivideMoneyOperator}
                     onChange={value => this.setState({ waitDivideMoneyOperator: value })}
                   >
