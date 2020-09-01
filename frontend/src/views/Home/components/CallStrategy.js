@@ -158,8 +158,8 @@ class CallStrategy extends Component {
       params.id = strategyId;
       this.updateStrategy(params)
     } else {  // 新建
-      ForbidInitialValues.waitDivideMoneyOperator = '<=';
-      ForbidInitialValues.waitDivideMoneyPercent = 0;
+      // ForbidInitialValues.waitDivideMoneyOperator = '<=';
+      // ForbidInitialValues.waitDivideMoneyPercent = 0;
       ForbidInitialValues.dayStopCall = moment(ForbidInitialValues.dayStopCall, 'HH:mm').format('HH:mm')
       ForbidInitialValues.caseType = typeof (ForbidInitialValues.caseType) === 'string' ? ForbidInitialValues.caseType : ForbidInitialValues.caseType.join(',');
       ForbidInitialValues.status = typeof (ForbidInitialValues.status) === 'string' ? ForbidInitialValues.status : ForbidInitialValues.status.join(',');
@@ -352,6 +352,7 @@ class CallStrategy extends Component {
           ref={this.forbidCallRef}
           initialValues={ForbidInitialValues}
           setInitialValues={this.setInitialValues}
+          getStrategyDetail={this.getStrategyDetail}
           strategyId={strategyId}
           forbidCallTaskId={stopCallTask ? stopCallTask.id : null}
         />

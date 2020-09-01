@@ -48,9 +48,9 @@ class ForbidCallStrategy extends Component {
     params.waitDivideMoneyOperator = waitDivideMoneyOperator;
     params.waitDivideMoneyPercent = waitDivideMoneyPercent;
     params.dayStopCall = moment(params.dayStopCall, "HH:mm").format('HH:mm');
-    params.caseType = params.caseType.join(',');
-    params.status = params.status.join(',');
-    params.seekWarning = params.seekWarning.join(',');
+    params.caseType = (params.caseType || []).join(',');
+    params.status = (params.status || []).join(',');
+    params.seekWarning = (params.seekWarning || []).join(',');
 
     setInitialValues(params)
 
@@ -68,6 +68,7 @@ class ForbidCallStrategy extends Component {
     const { success, message: msg } = await strategyServices.updateStopCallTask(params);
     if (success) {
       message.success(msg)
+      this.props.getStrategyDetail()
       this.handleCancel()
     }
   }
@@ -98,6 +99,7 @@ class ForbidCallStrategy extends Component {
           form: 'forbidForm',
           htmlType: "submit",
         }}
+        destroyOnClose
       >
         <div className={styles.ForbidCallStrategy}>
           <Form
