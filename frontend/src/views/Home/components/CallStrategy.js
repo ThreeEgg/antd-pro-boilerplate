@@ -189,17 +189,23 @@ class CallStrategy extends Component {
   }
 
   selectRouteLimit = (rule, value, callback) => {
-    if (!value || value.length === 0) {
-      callback('请选择线路')
-      return
+    if (!value) {
+      return Promise.reject(new Error('请选择线路'))
+
     }
     if (value.find(item => item === "0") && value.length !== 1) {
-      callback('选择全部时，禁止选择其他线路')
-      return
+      return Promise.reject(new Error('选择全部时，禁止选择其他线路'))
+
+    }
+    if (value.length === 0) {
+      return Promise.reject(new Error('请选择线路'))
+
     }
     if (value.length > 10) {
-      callback('最多选择十条线路')
+      return Promise.reject(new Error('最多选择十条线路'))
+
     }
+    return Promise.resolve();
   }
 
   onDragEnd = result => {
@@ -317,7 +323,7 @@ class CallStrategy extends Component {
           </Form.Item>
           <Form.Item label="首次拨打生效间隔"
             name="firstCallInterval"
-            rules={[{ required: true, message: '请选择手次拨打生效间隔' }]}
+            rules={[{ required: true, message: '请选择首次拨打生效间隔' }]}
           >
             <Select style={{ width: 100 }} placeholder="请选择首次拨打生效间隔">
               <Option value={0}>立即生效</Option>
