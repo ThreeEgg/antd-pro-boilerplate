@@ -159,7 +159,7 @@ class CallStrategy extends Component {
       this.updateStrategy(params)
     } else {  // 新建
       ForbidInitialValues.waitDivideMoneyOperator = '<=';
-      ForbidInitialValues.waitDivideMoneyPercent = 100;
+      ForbidInitialValues.waitDivideMoneyPercent = 0;
       ForbidInitialValues.dayStopCall = moment(ForbidInitialValues.dayStopCall, 'HH:mm').format('HH:mm')
       ForbidInitialValues.caseType = typeof (ForbidInitialValues.caseType) === 'string' ? ForbidInitialValues.caseType : ForbidInitialValues.caseType.join(',');
       ForbidInitialValues.status = typeof (ForbidInitialValues.status) === 'string' ? ForbidInitialValues.status : ForbidInitialValues.status.join(',');
@@ -189,7 +189,7 @@ class CallStrategy extends Component {
   }
 
   selectRouteLimit = (rule, value, callback) => {
-    if (!value) {
+    if (!value || value.length === 0) {
       callback('请选择线路')
       return
     }
@@ -199,10 +199,6 @@ class CallStrategy extends Component {
     }
     if (value.length > 10) {
       callback('最多选择十条线路')
-    } else if (value.length === 0) {
-      callback()
-    } else {
-      callback()
     }
   }
 
@@ -308,6 +304,7 @@ class CallStrategy extends Component {
           >
             <Select style={{ width: 250 }} mode="multiple"
               placeholder="请选择线路地区"
+              allowClear
             >
               {
                 routeList.map(item => {
