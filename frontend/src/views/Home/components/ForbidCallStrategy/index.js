@@ -43,7 +43,6 @@ class ForbidCallStrategy extends Component {
       this.setState({
         caseStatusList: result
       })
-      console.log('result', result)
     }
   }
 
@@ -102,7 +101,7 @@ class ForbidCallStrategy extends Component {
     const { initialValues } = this.props;
     return (
       <Modal
-        width="60%"
+        width="64%"
         title="终止&顺延拨打管理"
         visible={forbidCallVisible}
         onOk={this.handleOk}
@@ -119,6 +118,10 @@ class ForbidCallStrategy extends Component {
             className={styles.forbidForm}
             initialValues={initialValues}
             onFinish={this.onFinish}
+            layout={{
+              labelCol: { span: 4 },
+              wrapperCol: { span: 14 },
+            }}
           >
             <div className="title">
               <span>终止拨打任务</span>
@@ -153,7 +156,7 @@ class ForbidCallStrategy extends Component {
                   />
                   {/* <Input addonAfter="%" style={{ width: 100, marginLeft: 5 }} ></Input> */}
                 </Form.Item>
-                <Form.Item label="案件状态类型" name="caseType">
+                <Form.Item label="案件状态类型不打" name="caseType">
                   <Checkbox.Group>
                     <Row>
                       <Col span={4}>
@@ -168,13 +171,13 @@ class ForbidCallStrategy extends Component {
                     </Row>
                   </Checkbox.Group>
                 </Form.Item>
-                <Form.Item label="案件停催" name="caseStopCall">
+                <Form.Item label="案件停催不打" name="caseStopCall">
                   <Radio.Group>
                     <Radio value="1">是</Radio>
                     <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
-                <Form.Item label="减免账户" name="remissionAccount">
+                <Form.Item label="减免账户不打" name="remissionAccount">
                   <Radio.Group>
                     <Radio value="1">是</Radio>
                     <Radio value="0">否</Radio>
@@ -194,25 +197,25 @@ class ForbidCallStrategy extends Component {
                     }
                   </Select>
                 </Form.Item>
-                <Form.Item label="已删除电话" name="deletedPhone">
+                <Form.Item label="已删除电话不打" name="deletedPhone">
                   <Radio.Group>
                     <Radio value="1">是</Radio>
                     <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
-                <Form.Item label="隐藏电话" name="delFlag">
+                <Form.Item label="隐藏电话不打" name="delFlag">
                   <Radio.Group>
                     <Radio value="1">是</Radio>
                     <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
-                <Form.Item label="禁止小Go拨打" name="notXiaoGo">
+                <Form.Item label="禁止小Go拨打不打" name="notXiaoGo">
                   <Radio.Group disabled>
                     <Radio value="1">是</Radio>
                     <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
-                <Form.Item label="投诉预警" name="seekWarning">
+                <Form.Item label="投诉预警不打" name="seekWarning">
                   <Checkbox.Group>
                     <Row>
                       <Col span={4}>
