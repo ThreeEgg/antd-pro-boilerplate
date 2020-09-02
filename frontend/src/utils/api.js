@@ -13,4 +13,6 @@ export default {
 
   judgeType: '/xiaoGoRobot/strategy/listJudgeTypes',// 获取判断类型
   routeList: '/xiaoGoRobot/callCenter/listAllCallCenterAreas',// 获取所有线路
+
+  caseStatusList: '/xiaoGoRobot/fetchConfig/listProgressCodes', // 获取案件状态
 }

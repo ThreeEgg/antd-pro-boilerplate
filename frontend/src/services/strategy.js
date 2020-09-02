@@ -41,3 +41,7 @@ export const getRouteList = () => {
 export const updateStopCallTask = params => {
   return axios.post(`${api.updateStopCallTask}`, params)
 }
+
+export const getCaseStatusList = () => {
+  return axios.get(`${api.caseStatusList}`)
+}

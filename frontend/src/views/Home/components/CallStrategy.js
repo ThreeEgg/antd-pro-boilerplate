@@ -23,7 +23,7 @@ class CallStrategy extends Component {
       caseType: ['B', 'C'],
       caseStopCall: '1',
       remissionAccount: '1',
-      status: ['Stop'],
+      status: ['Stop', 'Payoff'],
       deletedPhone: '1',
       delFlag: '1',
       notXiaoGo: '1',

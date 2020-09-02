@@ -15,10 +15,12 @@ class ForbidCallStrategy extends Component {
     forbidCallVisible: false,
     waitDivideMoneyOperator: '<=',
     waitDivideMoneyPercent: 0,
+    caseStatusList: [],
   }
 
   componentDidMount() {
     const { initialValues } = this.props;
+    this.getCaseStatusList()
     this.setState({
       waitDivideMoneyOperator: initialValues.waitDivideMoneyOperator,
       waitDivideMoneyPercent: initialValues.waitDivideMoneyPercent,
@@ -32,6 +34,16 @@ class ForbidCallStrategy extends Component {
         waitDivideMoneyOperator: initialValues.waitDivideMoneyOperator,
         waitDivideMoneyPercent: initialValues.waitDivideMoneyPercent,
       })
+    }
+  }
+
+  getCaseStatusList = async () => {
+    const { success, result } = await strategyServices.getCaseStatusList()
+    if (success) {
+      this.setState({
+        caseStatusList: result
+      })
+      console.log('result', result)
     }
   }
 
@@ -86,7 +98,7 @@ class ForbidCallStrategy extends Component {
   }
 
   render() {
-    const { forbidCallVisible, waitDivideMoneyOperator, waitDivideMoneyPercent } = this.state;
+    const { forbidCallVisible, waitDivideMoneyOperator, waitDivideMoneyPercent, caseStatusList } = this.state;
     const { initialValues } = this.props;
     return (
       <Modal
@@ -118,7 +130,7 @@ class ForbidCallStrategy extends Component {
             </div>
             <Row >
               <Col span={24}>
-                <Form.Item label="最新欠款金额/委案金额(不打)" className="moneyInput">
+                <Form.Item label="最新欠款金额/委案金额不打" className="moneyInput">
                   <Select style={{ width: 100 }} value={waitDivideMoneyOperator}
                     onChange={value => this.setState({ waitDivideMoneyOperator: value })}
                   >
@@ -168,29 +180,19 @@ class ForbidCallStrategy extends Component {
                     <Radio value="0">否</Radio>
                   </Radio.Group>
                 </Form.Item>
-                <Form.Item label="案件状态" name="status">
-                  <Checkbox.Group>
-                    <Row>
-                      <Col span={4}>
-                        <Checkbox value="Found1">Found_1</Checkbox>
-                      </Col>
-                      <Col span={4}>
-                        <Checkbox value="PTP">ptp</Checkbox>
-                      </Col>
-                      <Col span={4}>
-                        <Checkbox value="PTPn">ptpn</Checkbox>
-                      </Col>
-                      <Col span={4}>
-                        <Checkbox value="Check">check</Checkbox>
-                      </Col>
-                      <Col span={4}>
-                        <Checkbox value="Stop">stop</Checkbox>
-                      </Col>
-                      <Col span={4}>
-                        <Checkbox value="Payoff">payoff</Checkbox>
-                      </Col>
-                    </Row>
-                  </Checkbox.Group>
+                <Form.Item label="案件状态不打" name="status">
+                  <Select mode="multiple"
+                    placeholder="请选择案件状态"
+                    allowClear
+                  >
+                    {
+                      caseStatusList.map(item => {
+                        return (
+                          <Option value={item.nameCd} key={item.nameCd}>{item.name}</Option>
+                        )
+                      })
+                    }
+                  </Select>
                 </Form.Item>
                 <Form.Item label="已删除电话" name="deletedPhone">
                   <Radio.Group>

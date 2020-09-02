@@ -27,9 +27,9 @@ class StrategyEditor extends Component {
   initConnector = () => {
     const connectorInstance = window.jsPlumb.newInstance({
       connector: ['Flowchart', { midpoint: 0.08, cornerRadius: 10 }],
-      paintStyle: { strokeWidth: 5, stroke: "rgba(0,165,200,0.5)" },
+      paintStyle: { strokeWidth: 5, stroke: "rgba(0,165,200,0.3)" },
       hoverPaintStyle: {
-        stroke: "rgba(0,0,200,0.8)",
+        stroke: "rgba(0,0,255,0.8)",
       },
       endpoint: ["Dot", { radius: 8 }],
       endpointStyle: { fill: "#008dc2" },
