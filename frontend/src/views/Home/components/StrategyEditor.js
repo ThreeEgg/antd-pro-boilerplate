@@ -26,7 +26,9 @@ class StrategyEditor extends Component {
 
   initConnector = () => {
     const connectorInstance = window.jsPlumb.newInstance({
-      connector: ['Flowchart', { midpoint: 0.08, cornerRadius: 10 }],
+      connectionsDetachable: true,
+      reattachConnections: true,
+      connector: ['Flowchart', { gap: 10, cornerRadius: 5, alwaysRespectStubs: true, midpoint: 0.08, }],
       paintStyle: { strokeWidth: 5, stroke: "rgba(0,165,200,0.3)" },
       hoverPaintStyle: {
         stroke: "rgba(0,0,255,0.8)",
@@ -36,7 +38,7 @@ class StrategyEditor extends Component {
       endpointHoverStyle: {
         fill: "#006dc2",
       },
-      container: "editor"
+      container: "editor",
     });
 
     // 绑定事件监听
@@ -70,19 +72,6 @@ class StrategyEditor extends Component {
       subStrategyVisible: true
     })
   }
-
-  /* addSubStrategy = async (paramsData) => {
-    const { strategyId } = this.props
-    const params = {
-      ...paramsData,
-      strategyId,
-      strategyRuleList: [],
-    }
-    const { success, message: msg } = await strategyServices.addSubStrategy(params)
-    if (success) {
-      message.success(msg)
-    }
-  } */
 
   handleCancel = () => {
     this.setState({

@@ -280,6 +280,7 @@ class SubStrategy extends Component {
               data-id={subStrategyItem.id}
               style={{ background: '#e6e6e6' }}
             />
+
             <div className={styles.titleBox}>
               <div className="title" onDoubleClick={this.editSubStrategyName}>
                 <span>子拨打策略{propsIndex}：</span>
