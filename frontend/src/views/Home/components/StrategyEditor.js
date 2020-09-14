@@ -26,6 +26,7 @@ class StrategyEditor extends Component {
 
   initConnector = () => {
     const connectorInstance = window.jsPlumb.newInstance({
+      // anchor: ["Perimeter", { shape: "Square", anchorCount: 150 }],
       connectionsDetachable: true,
       reattachConnections: true,
       connector: ['Flowchart', { gap: 10, cornerRadius: 5, alwaysRespectStubs: true, midpoint: 0.08, }],
@@ -33,6 +34,15 @@ class StrategyEditor extends Component {
       hoverPaintStyle: {
         stroke: "rgba(0,0,255,0.8)",
       },
+      connectionOverlays: [                 // 连线上的默认样式  这里是箭头
+        ["Arrow", {
+          location: 0.5,
+          paintStyle: {
+            stroke: '#00688B',
+            fill: '#00688B',
+          }
+        }]
+      ],
       endpoint: ["Dot", { radius: 8 }],
       endpointStyle: { fill: "#008dc2" },
       endpointHoverStyle: {
@@ -41,7 +51,7 @@ class StrategyEditor extends Component {
       container: "editor",
     });
 
-    // 绑定事件监听
+    /* // 绑定事件监听
     connectorInstance.bind("connection", function (c) {
       // console.log('connection', c);
     });
@@ -54,7 +64,7 @@ class StrategyEditor extends Component {
     // 连线删除
     connectorInstance.bind("beforeDetach", function (c) {
       return true;
-    });
+    }); */
 
     connectorInstance.bind("dblclick", function (c) {
       connectorInstance.deleteConnection(c);
